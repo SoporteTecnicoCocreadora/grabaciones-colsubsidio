@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="es" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Grabaciones Colsubsidio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+body{margin:0}
+
+/* Layout: archivo de clases — resumen arriba, gráfica semanal, luego bootcamps por programa con su lista de clases desplegable */
+:root {
+  color-scheme: light;
+  --bg: #f4f7fb;
+  --surface: #ffffff;
+  --ink: #233041;
+  --ink-2: #4f5d70;
+  --ink-3: #7d8899;
+  --line: #dfe5ee;
+  --line-2: #edf1f6;
+  --btn-bg: #e6f0fc; --btn-fg: #1b5aa6; --btn-line: #c5daf4;
+  --soft: #eef4fc;
+  --accent: #b42318;          /* punto REC */
+  --focus: #2a78d6;
+  --ok: #1a7f4b;  --ok-bg: #e5f4ec;
+  --warn: #9a5b00; --warn-bg: #fdf1dc;
+  --idle: #5b6470; --idle-bg: #eceef1;
+  --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100; --s5: #e87ba4;
+  --f-display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --f-body: "IBM Plex Sans", "Segoe UI", Roboto, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 1180px; margin: 0 auto; padding-inline: 20px; padding-block: 28px 56px; display: grid; gap: 28px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(1.7rem, 3.2vw, 2.4rem); font-weight: 800; letter-spacing: -0.01em; }
+h2 { font-size: 1.15rem; font-weight: 700; }
+.mono { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+.eyebrow { font-family: var(--f-mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); display: flex; align-items: center; gap: 8px; }
+.rec { width: 9px; height: 9px; border-radius: 50%; background: var(--accent); display: inline-block; }
+header.top { display: grid; gap: 8px; }
+header.top p { margin: 0; color: var(--ink-2); max-width: 70ch; }
+
+.kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.kpi { background: var(--surface); padding: 16px 18px; display: grid; gap: 2px; }
+.kpi .v { color: var(--btn-fg); font-family: var(--f-display); font-weight: 800; font-size: 2rem; font-variant-numeric: tabular-nums; line-height: 1.1; }
+.kpi .l { color: var(--ink-2); font-size: 0.85rem; }
+.kpi .v.warn { color: var(--warn); }
+
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px; display: grid; gap: 14px; min-width: 0; }
+.panel-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px 16px; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 0.82rem; color: var(--ink-2); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+.chart { position: relative; min-width: 0; }
+.chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+.chart text { fill: var(--ink-3); font-family: var(--f-mono); font-size: 11px; }
+.tip { position: absolute; pointer-events: none; background: var(--surface); color: var(--ink); border: 1px solid var(--line); box-shadow: 0 6px 18px rgb(35 48 65 / 0.12); border-radius: 6px; padding: 8px 10px; font-size: 0.8rem; line-height: 1.4; min-width: 150px; transform: translate(-50%, calc(-100% - 10px)); z-index: 2; }
+.tip b { font-family: var(--f-mono); font-weight: 500; }
+.tip .row { display: flex; justify-content: space-between; gap: 12px; }
+
+.controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.chip { font: inherit; font-size: 0.85rem; border: 1px solid var(--line); background: var(--surface); color: var(--ink-2); border-radius: 999px; padding: 5px 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+.chip[aria-pressed="true"] { border-color: var(--btn-line); background: var(--soft); color: var(--btn-fg); font-weight: 600; }
+.search { flex: 1 1 220px; min-width: 0; font: inherit; font-size: 0.9rem; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 8px; padding: 7px 11px; }
+button:focus-visible, a:focus-visible, input:focus-visible, summary:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+.program { display: grid; gap: 12px; }
+.program-head { display: flex; align-items: center; gap: 10px; }
+.program-head .count { color: var(--ink-3); font-size: 0.85rem; }
+.camps { display: grid; gap: 10px; }
+details.camp { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; min-width: 0; }
+details.camp > summary { list-style: none; cursor: pointer; padding: 14px 16px; display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.3fr) minmax(0, 1.4fr) auto; gap: 8px 18px; align-items: center; }
+details.camp > summary::-webkit-details-marker { display: none; }
+.camp-name { display: grid; gap: 1px; min-width: 0; }
+.camp-name strong { font-family: var(--f-display); font-size: 1.05rem; }
+.camp-name small { color: var(--ink-3); font-family: var(--f-mono); font-size: 0.75rem; }
+.dates { font-size: 0.85rem; color: var(--ink-2); }
+.dates .mono { color: var(--ink); }
+.prog { display: grid; gap: 4px; font-size: 0.8rem; color: var(--ink-2); }
+.bar { height: 6px; background: var(--line-2); border-radius: 999px; overflow: hidden; }
+.bar i { display: block; height: 100%; border-radius: 999px; }
+.pill { font-size: 0.75rem; font-weight: 600; padding: 3px 9px; border-radius: 999px; white-space: nowrap; justify-self: end; }
+.pill.ok { color: var(--ok); background: var(--ok-bg); }
+.pill.live { color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); }
+.pill.next { color: var(--idle); background: var(--idle-bg); }
+.pill.closed { color: var(--warn); background: var(--warn-bg); }
+.chev { transition: transform .15s; color: var(--ink-3); }
+details[open] .chev { transform: rotate(90deg); }
+
+.classes { border-top: 1px solid var(--line); overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+th { text-align: left; font-weight: 500; color: var(--ink-3); font-family: var(--f-mono); font-size: 0.72rem; letter-spacing: 0.05em; text-transform: uppercase; padding: 9px 12px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+td { padding: 9px 12px; border-bottom: 1px solid var(--line-2); vertical-align: middle; }
+tr:last-child td { border-bottom: 0; }
+td.code { font-family: var(--f-mono); color: var(--ink-2); white-space: nowrap; }
+td.when { font-family: var(--f-mono); white-space: nowrap; }
+td.act { white-space: nowrap; text-align: right; }
+.btn { font: inherit; font-size: 0.82rem; font-weight: 600; border-radius: 7px; padding: 5px 11px; border: 1px solid var(--btn-line); background: var(--btn-bg); color: var(--btn-fg); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+.btn.ghost { background: var(--surface); color: var(--ink-2); border-color: var(--line); }
+.btn:hover { filter: brightness(0.97); }
+.muted { color: var(--ink-3); font-size: 0.82rem; }
+.miss { color: var(--warn); font-size: 0.82rem; font-weight: 600; }
+.empty { color: var(--ink-3); padding: 18px 0; }
+
+.player { position: fixed; inset: 0; background: rgb(35 48 65 / 0.55); display: grid; place-items: center; padding: 16px; z-index: 10; }
+.player-box { width: min(960px, 100%); background: var(--surface); border-radius: 12px; overflow: hidden; display: grid; }
+.player-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 10px 14px; }
+.player-head div { min-width: 0; }
+.player-head strong { display: block; font-family: var(--f-display); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.player-head small { color: var(--ink-3); font-family: var(--f-mono); font-size: 0.75rem; }
+.frame { position: relative; aspect-ratio: 16 / 9; max-width: 100%; background: #000; }
+.frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.note { font-size: 0.82rem; color: var(--ink-3); margin: 0; }
+footer { font-size: 0.8rem; color: var(--ink-3); }
+
+@media (max-width: 760px) {
+  .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  details.camp > summary { grid-template-columns: minmax(0, 1fr) auto; }
+  .dates, .prog { grid-column: 1 / -1; }
+  .pill { grid-row: 1; grid-column: 2; }
+}
+@media (prefers-reduced-motion: reduce) { .chev { transition: none; } }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <div class="eyebrow"><span class="rec"></span> Bootcamps Colsubsidio · Grabaciones de clase</div>
+    <h1>Grabaciones por bootcamp</h1>
+    <p id="intro"></p>
+  </header>
+
+  <section class="kpis" id="kpis" aria-label="Resumen"></section>
+
+  <section class="panel" aria-labelledby="h-chart">
+    <div class="panel-head">
+      <h2 id="h-chart">Grabaciones por semana de clase</h2>
+      <div class="legend" id="legend"></div>
+    </div>
+    <div class="chart" id="chart"></div>
+    <p class="note">Cada barra suma las clases grabadas en la semana (lunes a domingo), por programa. Pasa el cursor por una barra para ver el detalle.</p>
+  </section>
+
+  <section class="panel" aria-labelledby="h-list">
+    <div class="panel-head">
+      <h2 id="h-list">Bootcamps y clases</h2>
+      <button class="btn ghost" id="copy" type="button">Copiar tabla para Excel</button>
+    </div>
+    <div class="controls">
+      <div class="controls" id="filters" role="group" aria-label="Programa"></div>
+      <input class="search" id="q" type="search" placeholder="Buscar clase o bootcamp…" aria-label="Buscar clase o bootcamp">
+    </div>
+    <div id="list" style="display:grid; gap:22px"></div>
+  </section>
+
+  <footer id="foot"></footer>
+</div>
+
+<div class="player" id="player" hidden>
+  <div class="player-box" role="dialog" aria-modal="true" aria-labelledby="p-title">
+    <div class="player-head">
+      <div><strong id="p-title"></strong><small id="p-sub"></small></div>
+      <div style="display:flex; gap:8px">
+        <a class="btn ghost" id="p-open" target="_blank" rel="noopener">Abrir en Drive</a>
+        <button class="btn" id="p-close" type="button">Cerrar</button>
+      </div>
+    </div>
+    <div class="frame"><iframe id="p-frame" title="Grabación" allow="autoplay; fullscreen" allowfullscreen></iframe></div>
+  </div>
+</div>
+
+<script>
+const EMBED = true;
+const DATA = {"generated_at": "2026-10-15 11:29", "bootcamps": [{"id": 241, "code": "1A", "label": "IA 1", "program": "IA", "num": 1, "internal_name": "Bootcamp 1A - IA", "name": "Innovación apalancada con uso de IA", "status": "in_progress", "students": 33, "start": "2026-08-25", "end": "2026-09-17", "classes": [{"module": 1, "n": 1, "name": "Qué es innovar y cómo se crea valor con IA", "date": "2026-08-25 18:00", "recording": "https://drive.google.com/file/d/1-GKIMGE3drFPCBrCGHxZl-M39mpul8Ac/view?usp=sharing"}, {"module": 1, "n": 2, "name": "Tipos de innovación y la IA como habilitador", "date": "2026-08-26 18:00", "recording": "https://drive.google.com/file/d/1qo6i4NYBQ4rrc70viMuEGQqBkh8V2Lu5/view?usp=sharing"}, {"module": 1, "n": 3, "name": "Proceso de innovación y prompt engineering con IA", "date": "2026-08-27 18:00", "recording": "https://drive.google.com/file/d/1v-QGpOprpoUW6kbePP55V4hP0U0kgpD3/view?usp=sharing"}, {"module": 1, "n": 4, "name": "Exploración de oportunidades con IA", "date": "2026-09-01 18:00", "recording": "https://drive.google.com/file/d/1tFd4g1SkrGLMohFaAc0i_fiqlrmpkqiP/view?usp=sharing"}, {"module": 1, "n": 5, "name": "Definir desafíos poderosos con IA", "date": "2026-09-02 18:00", "recording": "https://drive.google.com/file/d/18xs1tngCXdqeV4kZUzTe2SFrmEn2L5vM/view?usp=sharing"}, {"module": 1, "n": 6, "name": "Ideación avanzada con IA", "date": "2026-09-03 18:00", "recording": "https://drive.google.com/file/d/1FCIcwVgOW94qTK4xcS_RznmG9wzDWQmo/view?usp=sharing"}, {"module": 2, "n": 7, "name": "Prototipar con IA: del concepto al diseño rápido", "date": "2026-09-08 18:00", "recording": "https://drive.google.com/file/d/1KQ9AH0PkYa8jbj7hyjLaEE_iOCuwRK3K/view?usp=sharing"}, {"module": 2, "n": 8, "name": "Validación de hipótesis con IA", "date": "2026-09-09 18:00", "recording": "https://drive.google.com/file/d/1cQjMi14fL2OXf02Sngpy4am3sfGUN89G/view?usp=sharing"}, {"module": 2, "n": 9, "name": "Experimentos simulados con IA: usuarios artificiales", "date": "2026-09-10 18:00", "recording": "https://drive.google.com/file/d/1J-PP3BOghlN0JeGtz-oPEmy0KhQtheSu/view?usp=sharing"}, {"module": 2, "n": 10, "name": "Modelos de negocio e impacto con IA", "date": "2026-09-15 18:00", "recording": "https://drive.google.com/file/d/1tkfhgCvikUPCFq5vdb5dbBeF2vhg-K4G/view?usp=sharing"}, {"module": 2, "n": 11, "name": "Escalar y comunicar la innovación", "date": "2026-09-16 18:00", "recording": "https://drive.google.com/file/d/1e40a_O1jkyyIOxxkl5RRQv4SIPUEsRP1/view?usp=sharing"}, {"module": 2, "n": 12, "name": "Presentación del proyecto final", "date": "2026-09-17 18:00", "recording": "https://drive.google.com/file/d/1wRkQRqBClo0YlFgDe1AKo-hY9I4SjOcM/view?usp=sharing"}]}, {"id": 246, "code": "2A", "label": "IA 2", "program": "IA", "num": 2, "internal_name": "Bootcamp 2A - IA", "name": "Innovación apalancada con uso de IA", "status": "in_progress", "students": 38, "start": "2026-09-01", "end": "2026-09-24", "classes": [{"module": 1, "n": 1, "name": "Qué es innovar y cómo se crea valor con IA", "date": "2026-09-01 18:00", "recording": "https://drive.google.com/file/d/1v99ElCvkVdyDLspxSa1JCPodzIup4XQb/view?usp=sharing"}, {"module": 1, "n": 2, "name": "Tipos de innovación y la IA como habilitador", "date": "2026-09-02 18:00", "recording": "https://drive.google.com/file/d/1VEkNR1gNG1VpnFtNN-FG3Rz18yRorXgg/view?usp=sharing"}, {"module": 1, "n": 3, "name": "Proceso de innovación y prompt engineering con IA", "date": "2026-09-03 18:00", "recording": "https://drive.google.com/file/d/19h00Q34H_jEGgPFNDhT9X9zvRzDdRCEL/view?usp=sharing"}, {"module": 1, "n": 4, "name": "Exploración de oportunidades con IA", "date": "2026-09-08 18:00", "recording": "https://drive.google.com/file/d/1eDjxEgRHvknYjnmyo3hJrn7heC3V_L8J/view?usp=sharing"}, {"module": 1, "n": 5, "name": "Definir desafíos poderosos con IA", "date": "2026-09-09 18:00", "recording": "https://drive.google.com/file/d/1EE6tsLvWUkbh2jdxTmzvkUMfPyG6chpO/view?usp=sharing"}, {"module": 1, "n": 6, "name": "Ideación avanzada con IA", "date": "2026-09-10 18:00", "recording": "https://drive.google.com/file/d/1cOp8RKjJAyx8A5uk9knfcA-3mtMlSG3k/view?usp=sharing"}, {"module": 2, "n": 7, "name": "Prototipar con IA: del concepto al diseño rápido", "date": "2026-09-15 18:00", "recording": "https://drive.google.com/file/d/1_GHpgpVHdK5M9TrtPYNt7vYnYkxIRTLu/view?usp=sharing"}, {"module": 2, "n": 8, "name": "Validación de hipótesis con IA", "date": "2026-09-16 18:00", "recording": "https://drive.google.com/file/d/100ljcV5aoaTOksoNUzxr9WUAUTL6VBv5/view?usp=sharing"}, {"module": 2, "n": 9, "name": "Experimentos simulados con IA: usuarios artificiales", "date": "2026-09-17 18:00", "recording": "https://drive.google.com/file/d/1La6nQaLlkwgv2PET_Dt_RmUN5nAFW1WX/view?usp=sharing"}, {"module": 2, "n": 10, "name": "Modelos de negocio e impacto con IA", "date": "2026-09-22 18:00", "recording": "https://drive.google.com/file/d/110HoRnVQlTX0ceWdTY0OcegLyBuryi0m/view?usp=sharing"}, {"module": 2, "n": 11, "name": "Escalar y comunicar la innovación", "date": "2026-09-23 18:00", "recording": "https://drive.google.com/file/d/1jliE1-2DCoJg7kGWWskSlWDlRzsy3FCF/view?usp=sharing"}, {"module": 2, "n": 12, "name": "Presentación del proyecto final", "date": "2026-09-24 18:00", "recording": "https://drive.google.com/file/d/1XT2xx74NEnS6yDZsagEQ3g7w28759ywN/view?usp=sharing"}]}, {"id": 247, "code": "3A", "label": "IA 3", "program": "IA", "num": 3, "internal_name": "Bootcamp 3A - IA", "name": "Innovación apalancada con uso de IA (Colsubsidio)", "status": "in_progress", "students": 39, "start": "2026-09-08", "end": "2026-10-01", "classes": [{"module": 1, "n": 1, "name": "Qué es innovar y cómo se crea valor con IA", "date": "2026-09-08 18:00", "recording": "https://drive.google.com/file/d/11d553trJlascyWBPTaenfs9hRFO8HKZ7/view?usp=sharing"}, {"module": 1, "n": 2, "name": "Tipos de innovación y la IA como habilitador", "date": "2026-09-09 18:00", "recording": "https://drive.google.com/file/d/1qDR7Qjuz6Mjm5ei0NyxNKMdiUGEc1dXW/view?usp=sharing"}, {"module": 1, "n": 3, "name": "Proceso de innovación y prompt engineering con IA", "date": "2026-09-10 18:00", "recording": "https://drive.google.com/file/d/1_6SbRAwr5KYzwV9t59oUZkhSXKXty0sf/view?usp=sharing"}, {"module": 1, "n": 4, "name": "Exploración de oportunidades con IA", "date": "2026-09-15 18:00", "recording": "https://drive.google.com/file/d/17u205EAsBJvxxNCVA8iZ2prYWH3MLhdM/view?usp=sharing"}, {"module": 1, "n": 5, "name": "Definir desafíos poderosos con IA", "date": "2026-09-16 18:00", "recording": "https://drive.google.com/file/d/1OBHqDK8OAV_dfhJuUO9AMIlYHug6T9Ga/view?usp=sharing"}, {"module": 1, "n": 6, "name": "Ideación avanzada con IA", "date": "2026-09-17 18:00", "recording": "https://drive.google.com/file/d/1xgkeGyU85UmoOePmo5cRwdy4OSRpaabH/view?usp=sharing"}, {"module": 2, "n": 7, "name": "Prototipar con IA: del concepto al diseño rápido", "date": "2026-09-22 18:00", "recording": "https://drive.google.com/file/d/1tj6yqdjakA1t6e6tLvFrPmARvo7jfWn2/view?usp=sharing"}, {"module": 2, "n": 8, "name": "Validación de hipótesis con IA", "date": "2026-09-23 18:00", "recording": "https://drive.google.com/file/d/1LF3_68oB6cvML8r72GJQ4mj0JRQMpjRB/view?usp=sharing"}, {"module": 2, "n": 9, "name": "Experimentos simulados con IA: usuarios artificiales", "date": "2026-09-24 18:00", "recording": "https://drive.google.com/file/d/1GyAEmvzS_6oqku5Sa2U-Du_jZlprXSHl/view?usp=sharing"}, {"module": 2, "n": 10, "name": "Modelos de negocio e impacto con IA", "date": "2026-09-29 18:00", "recording": "https://drive.google.com/file/d/1oFZg2f90_Y2-6ddu_xqh2Fd-yY6QmXE3/view?usp=sharing"}, {"module": 2, "n": 11, "name": "Escalar y comunicar la innovación", "date": "2026-09-30 18:00", "recording": "https://drive.google.com/file/d/1-5u4kd53OoZ21fhYSHhm5lt-41QUN4O6/view?usp=sharing"}, {"module": 2, "n": 12, "name": "Presentación del proyecto final", "date": "2026-10-01 18:00", "recording": "https://drive.google.com/file/d/1KfhFEhqa6NZQt_I8aw8pLDXlJ1JedyRY/view?usp=sharing"}]}, {"id": 265, "code": "4A", "label": "IA 4", "program": "IA", "num": 4, "internal_name": "Bootcamp 4A - IA", "name": "Innovación apalancada con uso de IA (Colsubsidio)", "status": "in_progress", "students": 39, "start": "2026-09-15", "end": "2026-10-09", "classes": [{"module": 1, "n": 1, "name": "Qué es innovar y cómo se crea valor con IA", "date": "2026-09-15 18:00", "recording": "https://drive.google.com/file/d/12T24lKxL35qPceW15oIMt1akuO-bzq7_/view?usp=sharing"}, {"module": 1, "n": 2, "name": "Tipos de innovación y la IA como habilitador", "date": "2026-09-16 18:00", "recording": "https://drive.google.com/file/d/1XcNz6vDWEm2S8jPUJbrWKBNXsDosQ1Kn/view?usp=sharing"}, {"module": 1, "n": 3, "name": "Proceso de innovación y prompt engineering con IA", "date": "2026-09-17 18:00", "recording": "https://drive.google.com/file/d/1qk4nPVvJB57V56Ee0bOkG87dAe2mai93/view?usp=sharing"}, {"module": 1, "n": 4, "name": "Exploración de oportunidades con IA", "date": "2026-09-22 18:00", "recording": "https://drive.google.com/file/d/1AoKvakU0T1CqH_PW9sCh-bbAv5vS-pZT/view?usp=sharing"}, {"module": 1, "n": 5, "name": "Definir desafíos poderosos con IA", "date": "2026-09-23 18:00", "recording": "https://drive.google.com/file/d/1g7tD_H09EQd2E6DSHi7rIryaT89IL_3J/view?usp=sharing"}, {"module": 1, "n": 6, "name": "Ideación avanzada con IA", "date": "2026-09-24 18:00", "recording": "https://drive.google.com/file/d/1DC-mC758QS-vhDnDb8VjapbhkO83QD-7/view?usp=sharing"}, {"module": 2, "n": 7, "name": "Prototipar con IA: del concepto al diseño rápido", "date": "2026-09-29 18:00", "recording": "https://drive.google.com/file/d/1sgrT9qIWZsXQKI5KjcWRdzyBgECuWdxF/view?usp=sharing"}, {"module": 2, "n": 8, "name": "Validación de hipótesis con IA", "date": "2026-09-30 18:00", "recording": "https://drive.google.com/file/d/1UmGLOdF3lLKE2DxgB-0l9h_3SZKTeaKi/view?usp=sharing"}, {"module": 2, "n": 9, "name": "Experimentos simulados con IA: usuarios artificiales", "date": "2026-10-01 18:00", "recording": "https://drive.google.com/file/d/1JGUTy7PP5p6jBZ8hFbd3SDa1osugWUOS/view?usp=sharing"}, {"module": 2, "n": 10, "name": "Modelos de negocio e impacto con IA", "date": "2026-10-06 18:00", "recording": "https://drive.google.com/file/d/1S0rRMig5rkGOwttLZSCS--4U_Bj3s2-7/view?usp=sharing"}, {"module": 2, "n": 11, "name": "Escalar y comunicar la innovación", "date": "2026-10-07 18:00", "recording": "https://drive.google.com/file/d/1g5nKk3LlG74WlYiBK5vfI5URCEQgLO7S/view?usp=sharing"}, {"module": 2, "n": 12, "name": "Presentación del proyecto final", "date": "2026-10-09 18:00", "recording": "https://drive.google.com/file/d/1ShaWQJ2EkniWRSWTLK_idQ_-KsTqCsuN/view?usp=sharing"}]}, {"id": 266, "code": "5A", "label": "IA 5", "program": "IA", "num": 5, "internal_name": "Bootcamp 5A - IA", "name": "Innovación apalancada con uso de IA (Colsubsidio)", "status": "in_progress", "students": 31, "start": "2026-09-22", "end": "2026-10-15", "classes": [{"module": 1, "n": 1, "name": "Qué es innovar y cómo se crea valor con IA", "date": "2026-09-22 18:00", "recording": "https://drive.google.com/file/d/1bgWr_nwZ4enu9j6hf6U_AEXZkUUzAZKC/view?usp=sharing"}, {"module": 1, "n": 2, "name": "Tipos de innovación y la IA como habilitador", "date": "2026-09-23 18:00", "recording": "https://drive.google.com/file/d/1Mu2PFBzxE7LzOq9NAA6jT0zhak0CRmf3/view?usp=sharing"}, {"module": 1, "n": 3, "name": "Proceso de innovación y prompt engineering con IA", "date": "2026-09-24 18:00", "recording": "https://drive.google.com/file/d/1vbbmS1MQVmIZuhUtv2Tfe15sIWQcxr1L/view?usp=sharing"}, {"module": 1, "n": 4, "name": "Exploración de oportunidades con IA", "date": "2026-09-29 18:00", "recording": "https://drive.google.com/file/d/1wZIxvffhNkJFLhgpZNFNb9-yfki5evSz/view?usp=sharing"}, {"module": 1, "n": 5, "name": "Definir desafíos poderosos con IA", "date": "2026-09-30 18:00", "recording": "https://drive.google.com/file/d/1_T3RMFdK1jGw1MXt9ftUBz7umhJXRgHB/view?usp=sharing"}, {"module": 1, "n": 6, "name": "Ideación avanzada con IA", "date": "2026-10-01 18:00", "recording": "https://drive.google.com/file/d/1NNGu9Xy9FBdZJW6xtAjuFRG-JWlYP0Ig/view?usp=sharing"}, {"module": 2, "n": 7, "name": "Prototipar con IA: del concepto al diseño rápido", "date": "2026-10-06 18:00", "recording": "https://drive.google.com/file/d/1MeU_Yrys7_vfYIEwaM-79glNzqtvYRAY/view?usp=sharing"}, {"module": 2, "n": 8, "name": "Validación de hipótesis con IA", "date": "2026-10-07 18:00", "recording": "https://drive.google.com/file/d/1MSNs7F5mjqwSMD2QxX31Rk-s_3DOBoyE/view?usp=sharing"}, {"module": 2, "n": 9, "name": "Experimentos simulados con IA: usuarios artificiales", "date": "2026-10-08 18:00", "recording": "https://drive.google.com/file/d/1YBiYqWk9pCr2JMqHaxwjaTfU7avTsmDv/view?usp=sharing"}, {"module": 2, "n": 10, "name": "Modelos de negocio e impacto con IA", "date": "2026-10-13 18:00", "recording": "https://drive.google.com/file/d/1HCMwg1KUG7Wom_8mtzgwAFs03JiqNnzk/view?usp=sharing"}, {"module": 2, "n": 11, "name": "Escalar y comunicar la innovación", "date": "2026-10-14 18:00", "recording": "https://drive.google.com/file/d/1hEkxcsHViyk6p3uFyHuvPtlw5VXqlUlR/view?usp=sharing"}, {"module": 2, "n": 12, "name": "Presentación del proyecto final", "date": "2026-10-15 18:00", "recording": null}]}, {"id": 299, "code": "6A", "label": "IA 6", "program": "IA", "num": 6, "internal_name": "Bootcamp 6A-IA", "name": "Innovación apalancada con uso de IA (Colsubsidio)", "status": "in_progress", "students": 40, "start": "2026-09-29", "end": "2026-10-22", "classes": [{"module": 1, "n": 1, "name": "Qué es innovar y cómo se crea valor con IA", "date": "2026-09-29 18:00", "recording": "https://drive.google.com/file/d/1zeJgrHy1Z4AsF5nruMko6iiGIK70OGoq/view?usp=sharing"}, {"module": 1, "n": 2, "name": "Tipos de innovación y la IA como habilitador", "date": "2026-09-30 18:00", "recording": "https://drive.google.com/file/d/1jVRr1LQA3U2jIq1OZgK4a6l5hTEyXtlc/view?usp=sharing"}, {"module": 1, "n": 3, "name": "Proceso de innovación y prompt engineering con IA", "date": "2026-10-01 18:00", "recording": "https://drive.google.com/file/d/1ZWDg04YTT8ypJlc1cdj4jZQiIsCyczLx/view?usp=sharing"}, {"module": 1, "n": 4, "name": "Exploración de oportunidades con IA", "date": "2026-10-06 18:00", "recording": "https://drive.google.com/file/d/103qGRktSbM8w4KrVFO3HZW21YDKfSz8r/view?usp=sharing"}, {"module": 1, "n": 5, "name": "Definir desafíos poderosos con IA", "date": "2026-10-07 18:00", "recording": "https://drive.google.com/file/d/1trM7fM4b5At-IWllkRW56GBYz4svcQRQ/view?usp=sharing"}, {"module": 1, "n": 6, "name": "Ideación avanzada con IA", "date": "2026-10-08 18:00", "recording": "https://drive.google.com/file/d/1yJiNL8sPa4OYM9OkKs21Uhj1S4ADDxbG/view?usp=sharing"}, {"module": 2, "n": 7, "name": "Prototipar con IA: del concepto al diseño rápido", "date": "2026-10-13 18:00", "recording": "https://drive.google.com/file/d/15OO0B-BGtIc8pvc4j3_7fQtDdjVUupc9/view?usp=sharing"}, {"module": 2, "n": 8, "name": "Validación de hipótesis con IA", "date": "2026-10-14 18:00", "recording": "https://drive.google.com/file/d/1J_Jk7VkE6mW5tIU-w6DhVFengzMV6EDP/view?usp=sharing"}, {"module": 2, "n": 9, "name": "Experimentos simulados con IA: usuarios artificiales", "date": "2026-10-15 18:00", "recording": null}, {"module": 2, "n": 10, "name": "Modelos de negocio e impacto con IA", "date": "2026-10-20 18:00", "recording": null}, {"module": 2, "n": 11, "name": "Escalar y comunicar la innovación", "date": "2026-10-21 18:00", "recording": null}, {"module": 2, "n": 12, "name": "Presentación del proyecto final", "date": "2026-10-22 18:00", "recording": null}]}, {"id": 301, "code": "7A", "label": "IA 7", "program": "IA", "num": 7, "internal_name": "Bootcamp 7A - IA", "name": "Innovación apalancada con uso de IA (Colsubsidio)", "status": "in_progress", "students": 41, "start": "2026-10-06", "end": "2026-10-29", "classes": [{"module": 1, "n": 1, "name": "Qué es innovar y cómo se crea valor con IA", "date": "2026-10-06 18:00", "recording": "https://drive.google.com/file/d/19DOgP8--n5ogiZR7SXzNe7Q2stEJH6WH/view?usp=sharing"}, {"module": 1, "n": 2, "name": "Tipos de innovación y la IA como habilitador", "date": "2026-10-07 18:00", "recording": "https://drive.google.com/file/d/1-JZpG7-_s5QzbNGwMi7OYIgzOVghjqlw/view?usp=sharing"}, {"module": 1, "n": 3, "name": "Proceso de innovación y prompt engineering con IA", "date": "2026-10-08 18:00", "recording": "https://drive.google.com/file/d/1Fzu-rSRv9oyX1z50OUIm_tjhr3qOxr7t/view?usp=sharing"}, {"module": 1, "n": 4, "name": "Exploración de oportunidades con IA", "date": "2026-10-13 18:00", "recording": "https://drive.google.com/file/d/1mLtIjI6lPRk3tIDfcedcnp-zYB9oQ-9c/view?usp=sharing"}, {"module": 1, "n": 5, "name": "Definir desafíos poderosos con IA", "date": "2026-10-14 18:00", "recording": "https://drive.google.com/file/d/1-EbGdSQt79jRNYRbF6lrJ8Kvis5D44fZ/view?usp=sharing"}, {"module": 1, "n": 6, "name": "Ideación avanzada con IA", "date": "2026-10-15 18:00", "recording": null}, {"module": 2, "n": 7, "name": "Prototipar con IA: del concepto al diseño rápido", "date": "2026-10-20 18:00", "recording": null}, {"module": 2, "n": 8, "name": "Validación de hipótesis con IA", "date": "2026-10-21 18:00", "recording": null}, {"module": 2, "n": 9, "name": "Experimentos simulados con IA: usuarios artificiales", "date": "2026-10-22 18:00", "recording": null}, {"module": 2, "n": 10, "name": "Modelos de negocio e impacto con IA", "date": "2026-10-27 18:00", "recording": null}, {"module": 2, "n": 11, "name": "Escalar y comunicar la innovación", "date": "2026-10-28 18:00", "recording": null}, {"module": 2, "n": 12, "name": "Presentación del proyecto final", "date": "2026-10-29 18:00", "recording": null}]}, {"id": 303, "code": "8A", "label": "IA 8", "program": "IA", "num": 8, "internal_name": "Bootcamp 8A - IA", "name": "Innovación apalancada con uso de IA (Colsubsidio)", "status": "in_preparation", "students": 32, "start": "2026-10-13", "end": "2026-11-05", "classes": [{"module": 1, "n": 1, "name": "Qué es innovar y cómo se crea valor con IA", "date": "2026-10-13 18:00", "recording": "https://drive.google.com/file/d/1q49K_XhuttYBa7GP2BlDCtM6rozkXwkO/view?usp=sharing"}, {"module": 1, "n": 2, "name": "Tipos de innovación y la IA como habilitador", "date": "2026-10-14 18:00", "recording": "https://drive.google.com/file/d/1xEd2c416wOqup1P7gGwH5p46skand3EH/view?usp=sharing"}, {"module": 1, "n": 3, "name": "Proceso de innovación y prompt engineering con IA", "date": "2026-10-15 18:00", "recording": null}, {"module": 1, "n": 4, "name": "Exploración de oportunidades con IA", "date": "2026-10-20 18:00", "recording": null}, {"module": 1, "n": 5, "name": "Definir desafíos poderosos con IA", "date": "2026-10-21 18:00", "recording": null}, {"module": 1, "n": 6, "name": "Ideación avanzada con IA", "date": "2026-10-22 18:00", "recording": null}, {"module": 2, "n": 7, "name": "Prototipar con IA: del concepto al diseño rápido", "date": "2026-10-27 18:00", "recording": null}, {"module": 2, "n": 8, "name": "Validación de hipótesis con IA", "date": "2026-10-28 18:00", "recording": null}, {"module": 2, "n": 9, "name": "Experimentos simulados con IA: usuarios artificiales", "date": "2026-10-29 18:00", "recording": null}, {"module": 2, "n": 10, "name": "Modelos de negocio e impacto con IA", "date": "2026-11-03 18:00", "recording": null}, {"module": 2, "n": 11, "name": "Escalar y comunicar la innovación", "date": "2026-11-04 18:00", "recording": null}, {"module": 2, "n": 12, "name": "Presentación del proyecto final", "date": "2026-11-05 18:00", "recording": null}]}, {"id": 333, "code": "9A", "label": "IA 9", "program": "IA", "num": 9, "internal_name": "Bootcamp 9A - IA", "name": "Innovación apalancada con uso de IA (Colsubsidio)", "status": "in_preparation", "students": 0, "start": "2026-10-20", "end": "2026-11-12", "classes": [{"module": 1, "n": 1, "name": "Qué es innovar y cómo se crea valor con IA", "date": "2026-10-20 18:00", "recording": null}, {"module": 1, "n": 2, "name": "Tipos de innovación y la IA como habilitador", "date": "2026-10-21 18:00", "recording": null}, {"module": 1, "n": 3, "name": "Proceso de innovación y prompt engineering con IA", "date": "2026-10-22 18:00", "recording": null}, {"module": 1, "n": 4, "name": "Exploración de oportunidades con IA", "date": "2026-10-27 18:00", "recording": null}, {"module": 1, "n": 5, "name": "Definir desafíos poderosos con IA", "date": "2026-10-28 18:00", "recording": null}, {"module": 1, "n": 6, "name": "Ideación avanzada con IA", "date": "2026-10-29 18:00", "recording": null}, {"module": 2, "n": 7, "name": "Prototipar con IA: del concepto al diseño rápido", "date": "2026-11-03 18:00", "recording": null}, {"module": 2, "n": 8, "name": "Validación de hipótesis con IA", "date": "2026-11-04 18:00", "recording": null}, {"module": 2, "n": 9, "name": "Experimentos simulados con IA: usuarios artificiales", "date": "2026-11-05 18:00", "recording": null}, {"module": 2, "n": 10, "name": "Modelos de negocio e impacto con IA", "date": "2026-11-10 18:00", "recording": null}, {"module": 2, "n": 11, "name": "Escalar y comunicar la innovación", "date": "2026-11-11 18:00", "recording": null}, {"module": 2, "n": 12, "name": "Presentación del proyecto final", "date": "2026-11-12 18:00", "recording": null}]}, {"id": 245, "code": "1E", "label": "Liderazgo 1", "program": "Liderazgo", "num": 1, "internal_name": "Bootcamp 1E - Liderazgo", "name": "Liderazgo Estratégico de la Innovación (Colsubsidio)", "status": "in_progress", "students": 41, "start": "2026-09-15", "end": "2026-10-08", "classes": [{"module": 1, "n": 1, "name": "Innovación disruptiva y ambidestreza organizacional", "date": "2026-09-15 18:00", "recording": "https://drive.google.com/file/d/1q0tibkriSyTmneq2MZ1xuRNOSEuU9dHd/view?usp=sharing"}, {"module": 1, "n": 2, "name": "Innovación abierta y gestión del conocimiento", "date": "2026-09-16 18:00", "recording": "https://drive.google.com/file/d/1ZcvvFJoWbBqw74gTgUvUpQJ29I71sB-W/view?usp=sharing"}, {"module": 1, "n": 3, "name": "Liderazgo adaptativo y perfil del líder", "date": "2026-09-17 18:00", "recording": "https://drive.google.com/file/d/15gx_gl8pys_F9ZRplh6k3rJgMsRtZbT0/view?usp=sharing"}, {"module": 1, "n": 4, "name": "Inteligencia emocional y mentalidad de crecimiento", "date": "2026-09-22 18:00", "recording": "https://drive.google.com/file/d/1aGrZeqkGFMzzUQT3h1JROXT0sX0Ujp9i/view?usp=sharing"}, {"module": 1, "n": 5, "name": "Seguridad psicológica en los equipos", "date": "2026-09-23 18:00", "recording": "https://drive.google.com/file/d/1V5_NBfeZek1xlx4HBmoiVZAxnAKsW-AY/view?usp=sharing"}, {"module": 1, "n": 6, "name": "Creatividad colectiva", "date": "2026-09-24 18:00", "recording": "https://drive.google.com/file/d/1uq0fJYE2OzRb2IZ2S6LiK26IiB71Vc0y/view?usp=sharing"}, {"module": 2, "n": 7, "name": "Cultura y ecosistema de innovación", "date": "2026-09-29 18:00", "recording": "https://drive.google.com/file/d/1k6RyalKXkYlONCx7OUI6CkZLs1POEshF/view?usp=sharing"}, {"module": 2, "n": 8, "name": "Construir cultura: el líder como creadora de condiciones", "date": "2026-09-30 18:00", "recording": "https://drive.google.com/file/d/1UmtyhrUZDeWFYkHeRo6zvk2zSfhvD6hj/view?usp=sharing"}, {"module": 2, "n": 9, "name": "Estrategia y portafolio de innovación", "date": "2026-10-01 18:00", "recording": "https://drive.google.com/file/d/1bnox15VmpeQ1P5UKG88qYi7nIzXa7jUM/view?usp=sharing"}, {"module": 2, "n": 10, "name": "Gestión del cambio y resistencias", "date": "2026-10-06 18:00", "recording": "https://drive.google.com/file/d/1utHTQktMsLz-qOgGtfKnGnneXjRBz4iC/view?usp=sharing"}, {"module": 2, "n": 11, "name": "Plan de activación, indicadores y rituales", "date": "2026-10-07 18:00", "recording": "https://drive.google.com/file/d/1fUyCVZ7PRGY5DukY0wPYs5hEp_tCj1iQ/view?usp=sharing"}, {"module": 2, "n": 12, "name": "Comunicación, liderazgo del cambio y pitch final", "date": "2026-10-08 18:00", "recording": "https://drive.google.com/file/d/13MyA-6zV22d-kUyzNbNz-tVMztPoacAP/view?usp=sharing"}]}, {"id": 298, "code": "2E", "label": "Liderazgo 2", "program": "Liderazgo", "num": 2, "internal_name": "Bootcamp 2E - Liderazgo", "name": "Liderazgo Estratégico de la Innovación (Colsubsidio)", "status": "in_progress", "students": 33, "start": "2026-09-29", "end": "2026-10-22", "classes": [{"module": 1, "n": 1, "name": "Innovación disruptiva y ambidestreza organizacional", "date": "2026-09-29 18:00", "recording": "https://drive.google.com/file/d/1OOWlvuiKslBP0JSeYhTTCkHclMPxnz3l/view?usp=sharing"}, {"module": 1, "n": 2, "name": "Innovación abierta y gestión del conocimiento", "date": "2026-09-30 18:00", "recording": "https://drive.google.com/file/d/16K3rYNTDsHvXKJqpSaDllb2R6tKxrhev/view?usp=sharing"}, {"module": 1, "n": 3, "name": "Liderazgo adaptativo y perfil del líder", "date": "2026-10-01 18:00", "recording": "https://drive.google.com/file/d/1wjMNZtOhN9gLo-5aeYwtGQVP6ZjRMmRA/view?usp=sharing"}, {"module": 1, "n": 4, "name": "Inteligencia emocional y mentalidad de crecimiento", "date": "2026-10-06 18:00", "recording": "https://drive.google.com/file/d/1UOoOheFIpnttPF-Og-sW70SB9TXUaz5Y/view?usp=sharing"}, {"module": 1, "n": 5, "name": "Seguridad psicológica en los equipos", "date": "2026-10-07 18:00", "recording": "https://drive.google.com/file/d/1T9fXZgHjIKus7LJdlcj69SlSJsT8cKzC/view?usp=sharing"}, {"module": 1, "n": 6, "name": "Creatividad colectiva", "date": "2026-10-08 18:00", "recording": "https://drive.google.com/file/d/1aIQ1A8B6TrxE0t2vUDzjSCXVADF5bO2Q/view?usp=sharing"}, {"module": 2, "n": 7, "name": "Cultura y ecosistema de innovación", "date": "2026-10-13 18:00", "recording": "https://drive.google.com/file/d/1vBaXmFEw0OVAzDEjTMzWK9Jj-iy_8L2I/view?usp=sharing"}, {"module": 2, "n": 8, "name": "Construir cultura: el líder como creadora de condiciones", "date": "2026-10-14 18:00", "recording": "https://drive.google.com/file/d/1ShaedMCQa5ds35kBh9vtyy55LSWeoej2/view?usp=sharing"}, {"module": 2, "n": 9, "name": "Estrategia y portafolio de innovación", "date": "2026-10-15 18:00", "recording": null}, {"module": 2, "n": 10, "name": "Gestión del cambio y resistencias", "date": "2026-10-20 18:00", "recording": null}, {"module": 2, "n": 11, "name": "Plan de activación, indicadores y rituales", "date": "2026-10-21 18:00", "recording": null}, {"module": 2, "n": 12, "name": "Comunicación, liderazgo del cambio y pitch final", "date": "2026-10-22 18:00", "recording": null}]}, {"id": 305, "code": "3E", "label": "Liderazgo 3", "program": "Liderazgo", "num": 3, "internal_name": "Bootcamp 3E - Liderazgo", "name": "Liderazgo Estratégico de la Innovación (Colsubsidio)", "status": "in_preparation", "students": 34, "start": "2026-10-13", "end": "2026-11-05", "classes": [{"module": 1, "n": 1, "name": "Innovación disruptiva y ambidestreza organizacional", "date": "2026-10-13 18:00", "recording": "https://drive.google.com/file/d/127RXYds8Rnc03kt-NfP3Ew6TKerMFcyo/view?usp=sharing"}, {"module": 1, "n": 2, "name": "Innovación abierta y gestión del conocimiento", "date": "2026-10-14 18:00", "recording": "https://drive.google.com/file/d/1tomG-tA8FSbO9k0VNXSFgOZE5XDbXZkQ/view?usp=sharing"}, {"module": 1, "n": 3, "name": "Liderazgo adaptativo y perfil del líder", "date": "2026-10-15 18:00", "recording": null}, {"module": 1, "n": 4, "name": "Inteligencia emocional y mentalidad de crecimiento", "date": "2026-10-20 18:00", "recording": null}, {"module": 1, "n": 5, "name": "Seguridad psicológica en los equipos", "date": "2026-10-21 18:00", "recording": null}, {"module": 1, "n": 6, "name": "Creatividad colectiva", "date": "2026-10-22 18:00", "recording": null}, {"module": 2, "n": 7, "name": "Cultura y ecosistema de innovación", "date": "2026-10-27 18:00", "recording": null}, {"module": 2, "n": 8, "name": "Construir cultura: el líder como creadora de condiciones", "date": "2026-10-28 18:00", "recording": null}, {"module": 2, "n": 9, "name": "Estrategia y portafolio de innovación", "date": "2026-10-29 18:00", "recording": null}, {"module": 2, "n": 10, "name": "Gestión del cambio y resistencias", "date": "2026-11-03 18:00", "recording": null}, {"module": 2, "n": 11, "name": "Plan de activación, indicadores y rituales", "date": "2026-11-04 18:00", "recording": null}, {"module": 2, "n": 12, "name": "Comunicación, liderazgo del cambio y pitch final", "date": "2026-11-05 18:00", "recording": null}]}, {"id": 332, "code": "4E", "label": "Liderazgo 4", "program": "Liderazgo", "num": 4, "internal_name": "Bootcamp 4E - Liderazgo", "name": "Liderazgo Estratégico de la Innovación (Colsubsidio)", "status": "in_preparation", "students": 0, "start": "2026-10-20", "end": "2026-11-12", "classes": [{"module": 1, "n": 1, "name": "Innovación disruptiva y ambidestreza organizacional", "date": "2026-10-20 18:00", "recording": null}, {"module": 1, "n": 2, "name": "Innovación abierta y gestión del conocimiento", "date": "2026-10-21 18:00", "recording": null}, {"module": 1, "n": 3, "name": "Liderazgo adaptativo y perfil del líder", "date": "2026-10-22 18:00", "recording": null}, {"module": 1, "n": 4, "name": "Inteligencia emocional y mentalidad de crecimiento", "date": "2026-10-27 18:00", "recording": null}, {"module": 1, "n": 5, "name": "Seguridad psicológica en los equipos", "date": "2026-10-28 18:00", "recording": null}, {"module": 1, "n": 6, "name": "Creatividad colectiva", "date": "2026-10-29 18:00", "recording": null}, {"module": 2, "n": 7, "name": "Cultura y ecosistema de innovación", "date": "2026-11-03 18:00", "recording": null}, {"module": 2, "n": 8, "name": "Construir cultura: el líder como creadora de condiciones", "date": "2026-11-04 18:00", "recording": null}, {"module": 2, "n": 9, "name": "Estrategia y portafolio de innovación", "date": "2026-11-05 18:00", "recording": null}, {"module": 2, "n": 10, "name": "Gestión del cambio y resistencias", "date": "2026-11-10 18:00", "recording": null}, {"module": 2, "n": 11, "name": "Plan de activación, indicadores y rituales", "date": "2026-11-11 18:00", "recording": null}, {"module": 2, "n": 12, "name": "Comunicación, liderazgo del cambio y pitch final", "date": "2026-11-12 18:00", "recording": null}]}, {"id": 300, "code": "1M", "label": "Mujeres 1", "program": "Mujeres", "num": 1, "internal_name": "Bootcamp 1M - Mujeres", "name": "Mujeres Innovadoras que Transforman Organizaciones (Colsubsidio)", "status": "in_progress", "students": 43, "start": "2026-10-06", "end": "2026-10-29", "classes": [{"module": 1, "n": 1, "name": "Liderazgo femenino e identidad innovadora", "date": "2026-10-06 18:00", "recording": null}, {"module": 1, "n": 2, "name": "Género, autopercepción y barreras al liderazgo", "date": "2026-10-07 18:00", "recording": "https://drive.google.com/file/d/1dTLfxWzHbTafW58xTB5iKbxxz6pbZ1-Z/view?usp=sharing"}, {"module": 1, "n": 3, "name": "Autoconocimiento y reencuadre cognitivo", "date": "2026-10-08 18:00", "recording": "https://drive.google.com/file/d/11fpmxQ01e2uAek7j-eZ0b0OIPObQEPFn/view?usp=sharing"}, {"module": 1, "n": 4, "name": "Confianza personal y credibilidad relacional", "date": "2026-10-13 18:00", "recording": "https://drive.google.com/file/d/1b2sPeRj7XpcfryUEenYy7jw0b0b4NYGd/view?usp=sharing"}, {"module": 1, "n": 5, "name": "Comunicación asertiva y storytelling personal", "date": "2026-10-14 18:00", "recording": "https://drive.google.com/file/d/1vFoRdhxS8XoXO9HAaPY-4lTaUrsvjf15/view?usp=sharing"}, {"module": 1, "n": 6, "name": "Sororidad, liderazgo colectivo y casos de mujeres líderes", "date": "2026-10-15 18:00", "recording": null}, {"module": 2, "n": 7, "name": "Clase 7", "date": "2026-10-20 18:00", "recording": null}, {"module": 2, "n": 8, "name": "Clase 8", "date": "2026-10-21 18:00", "recording": null}, {"module": 2, "n": 9, "name": "Clase 9", "date": "2026-10-22 18:00", "recording": null}, {"module": 2, "n": 10, "name": "Clase 10", "date": "2026-10-27 18:00", "recording": null}, {"module": 2, "n": 11, "name": "Clase 11", "date": "2026-10-28 18:00", "recording": null}, {"module": 2, "n": 12, "name": "Clase 12", "date": "2026-10-29 18:00", "recording": null}]}, {"id": 304, "code": "2M", "label": "Mujeres 2", "program": "Mujeres", "num": 2, "internal_name": "Bootcamp 2M - Mujeres", "name": "Mujeres Innovadoras que Transforman Organizaciones (Colsubsidio)", "status": "in_preparation", "students": 34, "start": "2026-10-13", "end": "2026-11-05", "classes": [{"module": 1, "n": 1, "name": "Liderazgo femenino e identidad innovadora", "date": "2026-10-13 18:00", "recording": "https://drive.google.com/file/d/1N_44w1jv2QprfAOn-ql0Uip7hM9NiO7C/view?usp=sharing"}, {"module": 1, "n": 2, "name": "Género, autopercepción y barreras al liderazgo", "date": "2026-10-14 18:00", "recording": "https://drive.google.com/file/d/1DF_vqspAFFlTOo6u8aqPra-yMTzyFx_D/view?usp=sharing"}, {"module": 1, "n": 3, "name": "Autoconocimiento y reencuadre cognitivo", "date": "2026-10-15 18:00", "recording": null}, {"module": 1, "n": 4, "name": "Confianza personal y credibilidad relacional", "date": "2026-10-20 18:00", "recording": null}, {"module": 1, "n": 5, "name": "Comunicación asertiva y storytelling personal", "date": "2026-10-21 18:00", "recording": null}, {"module": 1, "n": 6, "name": "Sororidad, liderazgo colectivo y casos de mujeres líderes", "date": "2026-10-22 18:00", "recording": null}, {"module": 2, "n": 7, "name": "Capital social, redes estratégicas y posicionamiento", "date": "2026-10-27 18:00", "recording": null}, {"module": 2, "n": 8, "name": "Innovación con perspectiva de género y lectura del entorno", "date": "2026-10-28 18:00", "recording": null}, {"module": 2, "n": 9, "name": "Diseño de soluciones de valor", "date": "2026-10-29 18:00", "recording": null}, {"module": 2, "n": 10, "name": "Prototipado ágil y validación", "date": "2026-11-03 18:00", "recording": null}, {"module": 2, "n": 11, "name": "Estructuración del proyecto e indicadores de impacto", "date": "2026-11-04 18:00", "recording": null}, {"module": 2, "n": 12, "name": "Escalamiento, enfoque de equidad y pitch", "date": "2026-11-05 18:00", "recording": null}]}, {"id": 331, "code": "3M", "label": "Mujeres 3", "program": "Mujeres", "num": 3, "internal_name": "Bootcamp 3M - Mujeres", "name": "Mujeres Innovadoras que Transforman Organizaciones (Colsubsidio)", "status": "in_preparation", "students": 1, "start": "2026-10-20", "end": "2026-11-12", "classes": [{"module": 1, "n": 1, "name": "Liderazgo femenino e identidad innovadora", "date": "2026-10-20 18:00", "recording": null}, {"module": 1, "n": 2, "name": "Género, autopercepción y barreras al liderazgo", "date": "2026-10-21 18:00", "recording": null}, {"module": 1, "n": 3, "name": "Autoconocimiento y reencuadre cognitivo", "date": "2026-10-22 18:00", "recording": null}, {"module": 1, "n": 4, "name": "Confianza personal y credibilidad relacional", "date": "2026-10-27 18:00", "recording": null}, {"module": 1, "n": 5, "name": "Comunicación asertiva y storytelling personal", "date": "2026-10-28 18:00", "recording": null}, {"module": 1, "n": 6, "name": "Sororidad, liderazgo colectivo y casos de mujeres líderes", "date": "2026-10-29 18:00", "recording": null}, {"module": 2, "n": 7, "name": "Capital social, redes estratégicas y posicionamiento", "date": "2026-11-03 18:00", "recording": null}, {"module": 2, "n": 8, "name": "Innovación con perspectiva de género y lectura del entorno", "date": "2026-11-04 18:00", "recording": null}, {"module": 2, "n": 9, "name": "Diseño de soluciones de valor", "date": "2026-11-05 18:00", "recording": null}, {"module": 2, "n": 10, "name": "Prototipado ágil y validación", "date": "2026-11-10 18:00", "recording": null}, {"module": 2, "n": 11, "name": "Estructuración del proyecto e indicadores de impacto", "date": "2026-11-11 18:00", "recording": null}, {"module": 2, "n": 12, "name": "Escalamiento, enfoque de equidad y pitch", "date": "2026-11-12 18:00", "recording": null}]}, {"id": 242, "code": "1B", "label": "Ideación y Diseño 1", "program": "Ideación y Diseño", "num": 1, "internal_name": "Bootcamp 1B - I+D", "name": "Ideación y Diseño de Nuevos Productos y Servicios (Colsubsidio)", "status": "in_progress", "students": 29, "start": "2026-09-15", "end": "2026-10-07", "classes": [{"module": 1, "n": 1, "name": "El ciclo de vida del producto", "date": "2026-09-15 18:00", "recording": "https://drive.google.com/file/d/12LJAKJSZKR1j-Rad1do4TZD0i6lCElTP/view?usp=sharing"}, {"module": 1, "n": 2, "name": "Análisis estratégicos y tendencias", "date": "2026-09-16 18:00", "recording": "https://drive.google.com/file/d/1CELzx1Za66eOaXnprE3qcgwwsEgnJQFR/view?usp=sharing"}, {"module": 1, "n": 3, "name": "Diseño centrado en las personas", "date": "2026-09-17 18:00", "recording": "https://drive.google.com/file/d/1iXuCTdDFvnkJJGMcCDCMP8wrC5b6T7xb/view?usp=sharing"}, {"module": 1, "n": 4, "name": "Propuesta de valor y análisis competitivo", "date": "2026-09-23 18:00", "recording": "https://drive.google.com/file/d/1YapFQq-idKes2yxusm1J4mn40oKucimS/view?usp=sharing"}, {"module": 1, "n": 5, "name": "Ideación y priorización", "date": "2026-09-24 18:00", "recording": "https://drive.google.com/file/d/1_cdcdZWwqhd3UZT67dHa3ROgflXePtvm/view?usp=sharing"}, {"module": 1, "n": 6, "name": "Visión de producto", "date": "2026-09-28 18:00", "recording": "https://drive.google.com/file/d/15Ggoyfk87l4tKXe2EgarL1nM4X7TDlwE/view?usp=sharing"}, {"module": 2, "n": 7, "name": "Validación de hipótesis riesgosas", "date": "2026-09-29 18:00", "recording": "https://drive.google.com/file/d/1DEr7pGegOEx5cwU-gUL95n2x25PVXr1r/view?usp=sharing"}, {"module": 2, "n": 8, "name": "Diseño de experimentos y prototipos para aprender", "date": "2026-09-30 18:00", "recording": "https://drive.google.com/file/d/1Fm5V9HZiytFhl1acP-vBGgkTdmsgjGMw/view?usp=sharing"}, {"module": 2, "n": 9, "name": "Ejecutando experimentos", "date": "2026-10-01 18:00", "recording": "https://drive.google.com/file/d/1OCawiZl1HdqUxmYdaqONDQomZb7MadcA/view?usp=sharing"}, {"module": 2, "n": 10, "name": "Estrategia de salida al mercado y crecimiento", "date": "2026-10-05 18:00", "recording": "https://drive.google.com/file/d/1-kq_VqDy_juwaMsANuABHXQM3M1bcwF5/view?usp=sharing"}, {"module": 2, "n": 11, "name": "Storytelling y pitch", "date": "2026-10-06 18:00", "recording": "https://drive.google.com/file/d/1BrIkuWBY-6jlQAJCUBsvcWZqFNYNiren/view?usp=sharing"}, {"module": 2, "n": 12, "name": "Demoday", "date": "2026-10-07 18:00", "recording": "https://drive.google.com/file/d/1_GhyD2RgbmqEps1XlI8XOYrQ4cy_8b_5/view?usp=sharing"}]}, {"id": 302, "code": "2B", "label": "Ideación y Diseño 2", "program": "Ideación y Diseño", "num": 2, "internal_name": "Bootcamp 2B - I+D", "name": "Ideación y Diseño de Nuevos Productos y Servicios (Colsubsidio)", "status": "in_progress", "students": 36, "start": "2026-10-06", "end": "2026-10-29", "classes": [{"module": 1, "n": 1, "name": "El ciclo de vida del producto", "date": "2026-10-06 20:00", "recording": null}, {"module": 1, "n": 2, "name": "Análisis estratégicos y tendencias", "date": "2026-10-07 18:00", "recording": "https://drive.google.com/file/d/17QKXQ4mfgxwPwX8L3DB3rM73Zpnq7kU5/view?usp=sharing"}, {"module": 1, "n": 3, "name": "Diseño centrado en las personas", "date": "2026-10-08 18:00", "recording": "https://drive.google.com/file/d/1fSO8VdJdS1g0Z8CpMJzFS9Ht3ypWD4R9/view?usp=sharing"}, {"module": 1, "n": 4, "name": "Propuesta de valor y análisis competitivo", "date": "2026-10-13 18:00", "recording": "https://drive.google.com/file/d/1zo_X_f_mNPdhCvWzAxb4UDcHg4AO0krQ/view?usp=sharing"}, {"module": 1, "n": 5, "name": "Ideación y priorización", "date": "2026-10-14 18:00", "recording": "https://drive.google.com/file/d/1yuNKCfaMvtU7MQzlV4sehSlYpaQInp90/view?usp=sharing"}, {"module": 1, "n": 6, "name": "Visión de producto", "date": "2026-10-15 18:00", "recording": null}, {"module": 2, "n": 7, "name": "Validación de hipótesis riesgosas", "date": "2026-10-20 18:00", "recording": null}, {"module": 2, "n": 8, "name": "Diseño de experimentos y prototipos para aprender", "date": "2026-10-21 18:00", "recording": null}, {"module": 2, "n": 9, "name": "Ejecutando experimentos", "date": "2026-10-22 18:00", "recording": null}, {"module": 2, "n": 10, "name": "Estrategia de salida al mercado y crecimiento", "date": "2026-10-27 18:00", "recording": null}, {"module": 2, "n": 11, "name": "Storytelling y pitch", "date": "2026-10-28 18:00", "recording": null}, {"module": 2, "n": 12, "name": "Demoday", "date": "2026-10-29 18:00", "recording": null}]}, {"id": 243, "code": "1C", "label": "Facilitadores 1", "program": "Facilitadores", "num": 1, "internal_name": "Bootcamp 1C - Facil", "name": "Facilitadores de cambio organizacional", "status": "in_preparation", "students": 0, "start": "2026-08-21", "end": "2026-09-09", "classes": [{"module": 1, "n": 1, "name": "¿Qué es facilitar? Descubriendo el ADN del facilitador", "date": "2026-08-21 10:21", "recording": null}, {"module": 1, "n": 2, "name": "El rol del facilitador habilidades y perfiles", "date": "2026-08-22 10:21", "recording": null}, {"module": 1, "n": 3, "name": "Diseño de talleres", "date": "2026-08-23 10:21", "recording": null}, {"module": 1, "n": 4, "name": "Manejo de grupo", "date": "2026-08-24 10:21", "recording": null}, {"module": 1, "n": 5, "name": "Técnicas de facilitación y creatividad", "date": "2026-08-25 10:21", "recording": null}, {"module": 1, "n": 6, "name": "Gestión de Stakeholders", "date": "2026-08-26 10:21", "recording": null}, {"module": 2, "n": 7, "name": "Talleres en secuencia", "date": "2026-09-04 10:21", "recording": null}, {"module": 2, "n": 8, "name": "Gestión de Equipo en la secuencia", "date": "2026-09-05 10:21", "recording": null}, {"module": 2, "n": 9, "name": "Rituales de cambio", "date": "2026-09-06 10:21", "recording": null}, {"module": 2, "n": 10, "name": "Planeación estrategica", "date": "2026-09-07 10:21", "recording": null}, {"module": 2, "n": 11, "name": "Planeación estrategica", "date": "2026-09-08 10:21", "recording": null}, {"module": 2, "n": 12, "name": "Presentación del proceso de cambio", "date": "2026-09-09 10:21", "recording": null}]}]};
+
+const PROGRAMS = [
+  { key: 'IA', label: 'Innovación con IA', color: 'var(--s1)' },
+  { key: 'Liderazgo', label: 'Liderazgo', color: 'var(--s2)' },
+  { key: 'Mujeres', label: 'Mujeres Innovadoras', color: 'var(--s3)' },
+  { key: 'Ideación y Diseño', label: 'Ideación y Diseño', color: 'var(--s4)' },
+  { key: 'Facilitadores', label: 'Facilitadores', color: 'var(--s5)' },
+];
+const progOf = k => PROGRAMS.find(p => p.key === k);
+const MESES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+const today = DATA.generated_at.slice(0, 10);
+const fmtDay = s => { const [y, m, d] = s.slice(0, 10).split('-'); return `${+d} ${MESES[m - 1]}`; };
+const fmtFull = s => `${fmtDay(s)} ${s.slice(0, 4)}`;
+const fmtTime = s => { let [h, mi] = s.slice(11, 16).split(':').map(Number); const ap = h >= 12 ? 'p. m.' : 'a. m.'; h = h % 12 || 12; return `${h}:${String(mi).padStart(2, '0')} ${ap}`; };
+const driveId = url => (url.match(/\/d\/([\w-]+)/) || url.match(/[?&]id=([\w-]+)/) || [])[1];
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+// Estado real a partir de las fechas de las clases (las fechas guardadas del bootcamp no son confiables)
+function campState(b) {
+  const rec = b.classes.filter(c => c.recording).length;
+  if (rec === 0 && b.end && b.end < today) return { cls: 'closed', text: 'No abierto' };
+  if (b.start && b.start > today) return { cls: 'next', text: 'Por iniciar' };
+  if (b.end && b.end < today) return { cls: 'ok', text: 'Terminado' };
+  return { cls: 'live', text: 'En curso' };
+}
+const isPast = c => c.date.slice(0, 10) < today;
+
+// ---- Resumen
+const all = DATA.bootcamps.flatMap(b => b.classes.map(c => ({ ...c, b })));
+const recs = all.filter(c => c.recording);
+const dictadas = all.filter(c => isPast(c) && campState(c.b).text !== 'No abierto');
+const faltan = dictadas.filter(c => !c.recording);
+document.getElementById('intro').textContent =
+  `${DATA.bootcamps.length} bootcamps, de ${fmtFull(DATA.bootcamps.map(b => b.start).filter(Boolean).sort()[0])} a ${fmtFull(DATA.bootcamps.map(b => b.end).filter(Boolean).sort().at(-1))}. Datos de la plataforma al ${fmtFull(today)}, ${fmtTime(DATA.generated_at)}.`;
+const kpis = [
+  { v: recs.length, l: 'grabaciones subidas' },
+  { v: DATA.bootcamps.length, l: 'bootcamps' },
+  { v: dictadas.length, l: 'clases ya dictadas' },
+  { v: faltan.length, l: 'clases dictadas sin grabación', warn: faltan.length > 0 },
+];
+document.getElementById('kpis').innerHTML = kpis.map(k =>
+  `<div class="kpi"><span class="v mono${k.warn ? ' warn' : ''}">${k.v}</span><span class="l">${k.l}</span></div>`).join('');
+
+// ---- Gráfica semanal (barras apiladas por programa)
+const shown = PROGRAMS.filter(p => recs.some(c => c.b.program === p.key));
+document.getElementById('legend').innerHTML = shown.map(p => `<span><i class="sw" style="background:${p.color}"></i>${p.label}</span>`).join('');
+const monday = s => { const d = new Date(s.slice(0, 10) + 'T12:00:00'); d.setDate(d.getDate() - ((d.getDay() + 6) % 7)); return d.toISOString().slice(0, 10); };
+const weeksMap = new Map();
+recs.forEach(c => { const w = monday(c.date); if (!weeksMap.has(w)) weeksMap.set(w, {}); const o = weeksMap.get(w); o[c.b.program] = (o[c.b.program] || 0) + 1; });
+const w0 = [...weeksMap.keys()].sort()[0];
+const weeks = [];
+for (let d = new Date(w0 + 'T12:00:00'); d.toISOString().slice(0, 10) <= monday(today); d.setDate(d.getDate() + 7)) {
+  const k = d.toISOString().slice(0, 10); weeks.push({ k, v: weeksMap.get(k) || {} });
+}
+const chartEl = document.getElementById('chart');
+const tip = document.createElement('div'); tip.className = 'tip'; tip.hidden = true; chartEl.appendChild(tip);
+function drawChart() {
+  const W = Math.max(320, chartEl.clientWidth), H = 220, padL = 30, padB = 26, padT = 10;
+  const max = Math.max(...weeks.map(w => Object.values(w.v).reduce((a, b) => a + b, 0)));
+  const top = Math.ceil(max / 5) * 5;
+  const y = v => padT + (H - padT - padB) * (1 - v / top);
+  const slot = (W - padL) / weeks.length, bw = Math.max(6, Math.min(34, slot * 0.62));
+  let g = '';
+  for (let t = 0; t <= top; t += 5) g += `<line x1="${padL}" x2="${W}" y1="${y(t)}" y2="${y(t)}" stroke="var(--line-2)" stroke-width="1"/><text x="${padL - 6}" y="${y(t) + 4}" text-anchor="end">${t}</text>`;
+  const every = slot < 44 ? 2 : 1;
+  weeks.forEach((w, i) => {
+    const x = padL + slot * i + (slot - bw) / 2;
+    let acc = 0; const segs = shown.filter(p => w.v[p.key]);
+    segs.forEach((p, j) => {
+      const v = w.v[p.key], y1 = y(acc + v), y0 = y(acc);
+      const h = Math.max(0, y0 - y1 - (j < segs.length - 1 ? 2 : 0));
+      const isTop = j === segs.length - 1;
+      g += isTop
+        ? `<path d="M${x},${y0 - (j ? 2 : 0) + (j ? 2 : 0)} V${y1 + 4} Q${x},${y1} ${x + 4},${y1} H${x + bw - 4} Q${x + bw},${y1} ${x + bw},${y1 + 4} V${y0} Z" fill="${p.color}"/>`
+        : `<rect x="${x}" y="${y1 + 2}" width="${bw}" height="${Math.max(0, y0 - y1 - 2)}" fill="${p.color}"/>`;
+      acc += v;
+    });
+    if (i % every === 0) g += `<text x="${x + bw / 2}" y="${H - 8}" text-anchor="middle">${fmtDay(w.k)}</text>`;
+    g += `<rect class="hit" data-i="${i}" x="${padL + slot * i}" y="${padT}" width="${slot}" height="${H - padT - padB}" fill="transparent"/>`;
+  });
+  g += `<line x1="${padL}" x2="${W}" y1="${y(0)}" y2="${y(0)}" stroke="var(--line)" stroke-width="1"/>`;
+  const svg = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Grabaciones por semana y programa">${g}</svg>`;
+  chartEl.querySelector('svg')?.remove();
+  chartEl.insertAdjacentHTML('afterbegin', svg);
+  chartEl.querySelectorAll('.hit').forEach(r => {
+    r.addEventListener('mouseenter', () => {
+      const w = weeks[+r.dataset.i]; const tot = Object.values(w.v).reduce((a, b) => a + b, 0);
+      const end = new Date(w.k + 'T12:00:00'); end.setDate(end.getDate() + 6);
+      tip.innerHTML = `<div style="margin-bottom:4px">Semana del <b>${fmtDay(w.k)}</b> al <b>${fmtDay(end.toISOString())}</b></div>` +
+        (tot ? shown.filter(p => w.v[p.key]).map(p => `<div class="row"><span><i class="sw" style="background:${p.color}"></i> ${p.label}</span><b>${w.v[p.key]}</b></div>`).join('') + `<div class="row" style="margin-top:4px"><span>Total</span><b>${tot}</b></div>` : 'Sin grabaciones');
+      const box = r.getBBox(), scale = chartEl.clientWidth / W;
+      tip.style.left = Math.min(Math.max((box.x + box.width / 2) * scale, 90), chartEl.clientWidth - 90) + 'px';
+      tip.style.top = (y(tot) * scale) + 'px'; tip.hidden = false;
+    });
+    r.addEventListener('mouseleave', () => { tip.hidden = true; });
+  });
+}
+drawChart();
+let rt; window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(drawChart, 120); });
+
+// ---- Lista de bootcamps
+let filter = 'Todos', query = '';
+const filtersEl = document.getElementById('filters');
+const progsWithCamps = PROGRAMS.filter(p => DATA.bootcamps.some(b => b.program === p.key));
+filtersEl.innerHTML = ['Todos', ...progsWithCamps.map(p => p.key)].map(k => {
+  const p = progOf(k); return `<button class="chip" type="button" data-k="${esc(k)}" aria-pressed="${k === filter}">${p ? `<i class="sw" style="background:${p.color}"></i>${p.label}` : 'Todos'}</button>`;
+}).join('');
+filtersEl.addEventListener('click', e => { const b = e.target.closest('.chip'); if (!b) return; filter = b.dataset.k; filtersEl.querySelectorAll('.chip').forEach(c => c.setAttribute('aria-pressed', c === b)); renderList(); });
+document.getElementById('q').addEventListener('input', e => { query = e.target.value.trim().toLowerCase(); renderList(); });
+
+function classRow(b, c) {
+  const code = `M${c.module}C${String(c.n).padStart(2, '0')}`;
+  let act;
+  if (c.recording) {
+    act = EMBED
+      ? `<button class="btn" type="button" data-play="${b.id}:${c.n}">▶ Ver</button> <a class="btn ghost" href="${esc(c.recording)}" target="_blank" rel="noopener">Drive</a>`
+      : `<a class="btn" href="${esc(c.recording)}" target="_blank" rel="noopener">▶ Ver en Drive</a>`;
+  } else act = isPast(c) && campState(b).text !== 'No abierto' ? '<span class="miss">Falta grabación</span>' : '<span class="muted">Aún no dictada</span>';
+  return `<tr><td class="code">${code}</td><td class="when">${fmtFull(c.date)} · ${fmtTime(c.date)}</td><td>${esc(c.name)}</td><td class="act">${act}</td></tr>`;
+}
+function campCard(b, open) {
+  const p = progOf(b.program), st = campState(b);
+  const rec = b.classes.filter(c => c.recording).length, tot = b.classes.length;
+  const q = query;
+  const rows = b.classes.filter(c => !q || c.name.toLowerCase().includes(q) || b.label.toLowerCase().includes(q) || b.code.toLowerCase().includes(q));
+  return `<details class="camp"${open ? ' open' : ''}>
+    <summary>
+      <span class="camp-name"><strong>${esc(b.label)}</strong><small>${esc(b.internal_name)} · id ${b.id}</small></span>
+      <span class="dates">${b.start ? `<span class="mono">${fmtFull(b.start)}</span> → <span class="mono">${fmtFull(b.end)}</span>` : 'Sin clases'}<br><span class="muted">${b.students} estudiantes</span></span>
+      <span class="prog"><span><b class="mono">${rec}</b> de ${tot} clases grabadas</span><span class="bar"><i style="width:${tot ? rec / tot * 100 : 0}%; background:${p.color}"></i></span></span>
+      <span style="display:flex; align-items:center; gap:10px; justify-self:end"><span class="pill ${st.cls}">${st.text}</span><span class="chev" aria-hidden="true">›</span></span>
+    </summary>
+    <div class="classes"><table><thead><tr><th>Clase</th><th>Fecha</th><th>Tema</th><th></th></tr></thead><tbody>${rows.map(c => classRow(b, c)).join('')}</tbody></table></div>
+  </details>`;
+}
+function renderList() {
+  const q = query;
+  const camps = DATA.bootcamps.filter(b => (filter === 'Todos' || b.program === filter) &&
+    (!q || b.label.toLowerCase().includes(q) || b.code.toLowerCase().includes(q) || b.internal_name.toLowerCase().includes(q) || b.classes.some(c => c.name.toLowerCase().includes(q))));
+  const html = progsWithCamps.filter(p => camps.some(b => b.program === p.key)).map(p => {
+    const cs = camps.filter(b => b.program === p.key);
+    const r = cs.reduce((a, b) => a + b.classes.filter(c => c.recording).length, 0);
+    return `<div class="program"><div class="program-head"><i class="sw" style="background:${p.color}; width:12px; height:12px"></i><h3>${p.label}</h3><span class="count">${cs.length} bootcamps · ${r} grabaciones</span></div>
+      <div class="camps">${cs.map(b => campCard(b, !!q)).join('')}</div></div>`;
+  }).join('');
+  document.getElementById('list').innerHTML = html || '<p class="empty">No hay bootcamps ni clases que coincidan con la búsqueda.</p>';
+}
+renderList();
+
+// ---- Reproductor (solo en la versión descargable: claude.ai no permite incrustar Drive)
+const player = document.getElementById('player'), frame = document.getElementById('p-frame');
+function closePlayer() { player.hidden = true; frame.src = 'about:blank'; }
+document.getElementById('list').addEventListener('click', e => {
+  const btn = e.target.closest('[data-play]'); if (!btn) return;
+  const [bid, n] = btn.dataset.play.split(':'); const b = DATA.bootcamps.find(x => x.id == bid); const c = b.classes[n - 1];
+  document.getElementById('p-title').textContent = c.name;
+  document.getElementById('p-sub').textContent = `${b.label} · M${c.module}C${String(c.n).padStart(2, '0')} · ${fmtFull(c.date)}`;
+  document.getElementById('p-open').href = c.recording;
+  frame.src = `https://drive.google.com/file/d/${driveId(c.recording)}/preview`;
+  player.hidden = false; document.getElementById('p-close').focus();
+});
+document.getElementById('p-close').addEventListener('click', closePlayer);
+player.addEventListener('click', e => { if (e.target === player) closePlayer(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !player.hidden) closePlayer(); });
+
+// ---- Copiar para Excel (TSV)
+document.getElementById('copy').addEventListener('click', async e => {
+  const rows = [['Programa', 'Bootcamp', 'Código', 'ID plataforma', 'Módulo', 'Clase', 'Fecha', 'Hora', 'Tema', 'Grabación']];
+  DATA.bootcamps.forEach(b => b.classes.forEach(c => rows.push([b.program, b.label, b.internal_name, b.id, c.module, c.n, c.date.slice(0, 10), c.date.slice(11, 16), c.name, c.recording || ''])));
+  const tsv = rows.map(r => r.join('\t')).join('\n');
+  const btn = e.currentTarget, prev = btn.textContent;
+  try { await navigator.clipboard.writeText(tsv); btn.textContent = 'Copiada: pégala en Excel'; }
+  catch { const ta = document.createElement('textarea'); ta.value = tsv; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); btn.textContent = 'Copiada: pégala en Excel'; } catch { btn.textContent = 'No se pudo copiar'; } ta.remove(); }
+  setTimeout(() => { btn.textContent = prev; }, 2500);
+});
+
+document.getElementById('foot').textContent = EMBED
+  ? 'El video se reproduce con el permiso de Drive de quien lo abre: si un video no carga, usa "Drive" para abrirlo allá.'
+  : 'Los videos se abren en Google Drive. La versión descargable (dashboard.html del ZIP) los reproduce dentro de la página.';
+</script>
+
+</body>
+</html>
