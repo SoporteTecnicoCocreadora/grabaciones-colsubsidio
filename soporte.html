@@ -1,0 +1,2719 @@
+<!doctype html>
+<html lang="es" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Actividades de soporte Colsubsidio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: reporte de soporte — menú, resumen, gráficas (persona, semana, categoría), solicitudes por mes y desarrollos */
+:root {
+  color-scheme: light;
+  --bg: #f4f7fb; --surface: #ffffff; --ink: #233041; --ink-2: #4f5d70; --ink-3: #7d8899;
+  --line: #dfe5ee; --line-2: #edf1f6;
+  --accent: #2a78d6; --accent-soft: #e6f0fc; --accent-ink: #1b5aa6; --accent-line: #c5daf4;
+  --s2: #1baf7a;
+  --alta: #b42318; --alta-bg: #fde8e7; --media: #9a5b00; --media-bg: #fdf1dc; --baja: #1a7f4b; --baja-bg: #e5f4ec;
+  --ok: #1a7f4b; --ok-bg: #e5f4ec; --np: #9a3412; --np-bg: #fdebdd;
+  --f-display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --f-body: "IBM Plex Sans", "Segoe UI", Roboto, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.5; }
+.topnav { background: var(--surface); border-bottom: 1px solid var(--line); }
+.topnav .in { max-width: 1180px; margin: 0 auto; padding-inline: 20px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap; min-height: 54px; }
+.brand { font-family: var(--f-display); font-weight: 800; letter-spacing: -0.01em; }
+.topnav a { color: var(--ink-2); text-decoration: none; font-weight: 500; padding: 15px 2px; border-bottom: 2px solid transparent; }
+.topnav a[aria-current="page"] { color: var(--accent-ink); border-bottom-color: var(--accent); }
+.wrap { max-width: 1180px; margin: 0 auto; padding-inline: 20px; padding-block: 26px 56px; display: grid; gap: 26px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(1.7rem, 3.2vw, 2.3rem); font-weight: 800; letter-spacing: -0.01em; }
+h2 { font-size: 1.12rem; font-weight: 700; }
+.eyebrow { font-family: var(--f-mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); }
+header.top { display: grid; gap: 8px; }
+header.top p { margin: 0; color: var(--ink-2); max-width: 75ch; }
+.kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.kpi { background: var(--surface); padding: 16px 18px; display: grid; gap: 2px; }
+.kpi .v { font-family: var(--f-display); font-weight: 800; font-size: 2rem; color: var(--accent-ink); font-variant-numeric: tabular-nums; line-height: 1.1; }
+.kpi .l { color: var(--ink-2); font-size: 0.85rem; }
+.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px; display: grid; gap: 12px; min-width: 0; align-content: start; }
+.note { font-size: 0.82rem; color: var(--ink-3); margin: 0; }
+.hbars { display: grid; gap: 7px; }
+.hb { display: grid; grid-template-columns: minmax(0, 150px) minmax(0, 1fr) 40px; gap: 10px; align-items: center; font-size: 0.86rem; }
+.hb .n { color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hb .t { height: 12px; background: var(--line-2); border-radius: 3px; overflow: hidden; }
+.hb .t i { display: block; height: 100%; background: var(--accent); border-radius: 0 3px 3px 0; }
+.hb .c { font-family: var(--f-mono); font-variant-numeric: tabular-nums; text-align: right; color: var(--ink); }
+.chart { position: relative; min-width: 0; }
+.chart svg { display: block; width: 100%; height: auto; }
+.chart text { fill: var(--ink-3); font-family: var(--f-mono); font-size: 11px; }
+.tip { position: absolute; pointer-events: none; background: var(--surface); color: var(--ink); border: 1px solid var(--line); box-shadow: 0 6px 18px rgb(35 48 65 / 0.12); border-radius: 6px; padding: 7px 10px; font-size: 0.8rem; transform: translate(-50%, calc(-100% - 8px)); white-space: nowrap; }
+.months { display: flex; gap: 8px; flex-wrap: wrap; }
+.tab { font: inherit; font-weight: 600; border: 1px solid var(--line); background: var(--surface); color: var(--ink-2); border-radius: 8px; padding: 8px 16px; cursor: pointer; display: grid; text-align: left; }
+.tab small { font-weight: 400; color: var(--ink-3); font-size: 0.78rem; }
+.tab[aria-selected="true"] { border-color: var(--accent-line); background: var(--accent-soft); color: var(--accent-ink); }
+.controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.chip { font: inherit; font-size: 0.83rem; border: 1px solid var(--line); background: var(--surface); color: var(--ink-2); border-radius: 999px; padding: 4px 12px; cursor: pointer; }
+.chip[aria-pressed="true"] { border-color: var(--accent-line); background: var(--accent-soft); color: var(--accent-ink); font-weight: 600; }
+.search { flex: 1 1 220px; min-width: 0; font: inherit; font-size: 0.9rem; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 8px; padding: 7px 11px; }
+button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.month-sum { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 0.85rem; color: var(--ink-2); }
+.month-sum b { font-family: var(--f-mono); color: var(--ink); }
+.tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+th { text-align: left; font-weight: 600; color: #fff; background: #1f4e79; padding: 9px 10px; white-space: nowrap; position: sticky; top: 0; }
+td { padding: 9px 10px; border-bottom: 1px solid var(--line-2); vertical-align: top; }
+td.f { font-family: var(--f-mono); white-space: nowrap; color: var(--ink-2); }
+td.who { white-space: nowrap; font-weight: 500; }
+td.req { min-width: 240px; }
+td.notes { min-width: 280px; color: var(--ink-2); }
+.pill { display: inline-block; font-size: 0.75rem; font-weight: 600; padding: 2px 9px; border-radius: 999px; white-space: nowrap; }
+.p-Alta { color: var(--alta); background: var(--alta-bg); } .p-Media { color: var(--media); background: var(--media-bg); } .p-Baja { color: var(--baja); background: var(--baja-bg); }
+.e-ok { color: var(--ok); background: var(--ok-bg); } .e-np { color: var(--np); background: var(--np-bg); }
+.ref { font-family: var(--f-mono); font-size: 0.78rem; color: var(--accent-ink); display: block; margin-top: 4px; }
+.cat { color: var(--ink-3); font-size: 0.78rem; display: block; margin-top: 3px; }
+.empty { color: var(--ink-3); padding: 18px; }
+footer { font-size: 0.8rem; color: var(--ink-3); }
+@media (max-width: 820px) { .grid2 { grid-template-columns: minmax(0, 1fr); } .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } .hb { grid-template-columns: minmax(0, 110px) minmax(0, 1fr) 34px; } }
+</style>
+</head>
+<body>
+<nav class="topnav" aria-label="Secciones"><div class="in">
+  <span class="brand">Colsubsidio · Soporte</span>
+  <a href="index.html">Grabaciones</a>
+  <a href="soporte.html" aria-current="page">Actividades de soporte</a>
+</div></nav>
+<div class="wrap">
+  <header class="top">
+    <div class="eyebrow">La Cocreadora · Soporte técnico de plataforma</div>
+    <h1>Actividades de soporte Colsubsidio</h1>
+    <p id="intro"></p>
+  </header>
+  <section class="kpis" id="kpis" aria-label="Resumen"></section>
+
+  <div class="grid2">
+    <section class="panel"><h2>Solicitudes por persona</h2><div class="hbars" id="byPerson"></div><p class="note">Quién pidió cada solicitud (chats de WhatsApp y soporte directo).</p></section>
+    <section class="panel"><h2>Por categoría</h2><div class="hbars" id="byCat"></div></section>
+  </div>
+  <section class="panel">
+    <h2>Solicitudes por semana</h2>
+    <div class="chart" id="weekly"></div>
+    <p class="note">Solicitudes recibidas cada semana (lunes a domingo). Pasa el cursor por una barra para ver el detalle.</p>
+  </section>
+
+  <section class="panel" aria-labelledby="h-list">
+    <h2 id="h-list">Solicitudes por mes</h2>
+    <div class="months" role="tablist" id="months"></div>
+    <div class="month-sum" id="monthSum"></div>
+    <div class="controls">
+      <div class="controls" id="people" role="group" aria-label="Solicitante"></div>
+      <input class="search" id="q" type="search" placeholder="Buscar solicitud, estudiante o bootcamp…" aria-label="Buscar">
+    </div>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Fecha</th><th>Solicitante</th><th>Solicitud / Incidente</th><th>Prioridad</th><th>Estado</th><th>Notas / Evidencia</th><th>Atendió</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table></div>
+  </section>
+
+  <section class="panel" aria-labelledby="h-prs">
+    <h2 id="h-prs">Desarrollos desplegados (PRs)</h2>
+    <p class="note">Cambios de código mergeados en dev y desplegados en producción, con su tarea en Jira (LCO).</p>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Fecha</th><th>Responsable</th><th>PR</th><th>Descripción</th><th>Jira</th></tr></thead>
+      <tbody id="prs"></tbody>
+    </table></div>
+  </section>
+  <footer id="foot"></footer>
+</div>
+<script>
+const DATA = {
+ "items": [
+  {
+   "id": 1,
+   "fecha": "2026-09-01",
+   "mes": "2026-09",
+   "solicitante": "Oscar Blum",
+   "solicitud": "Agregar a Laura Duque al grupo de soporte",
+   "categoria": "Gestión / Accesos",
+   "prioridad": "Baja",
+   "estado": "Atendido",
+   "notas": "Agregada al grupo de WhatsApp de soporte.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Oscar"
+  },
+  {
+   "id": 2,
+   "fecha": "2026-09-01",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "Perfil profesor: un entregable enviado no aparece como entregado ni muestra la calificación",
+   "categoria": "Entregables / Calificaciones",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Al calificar se marca el ejercicio como visto/entregado y la vista del profesor se refresca con la nota y el estado aprobado/reprobado.",
+   "atendio": "David",
+   "referencia": "PR #260 · #132",
+   "fuente": "Grupo soporte"
+  },
+  {
+   "id": 3,
+   "fecha": "2026-09-01",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "Informe de diagnóstico individual: la descripción de Investigador y Movilizador es la misma",
+   "categoria": "Diagnóstico / Reportes PDF",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Se actualizaron los textos de los perfiles en los PDF con la información de Karyna; plantillas base servidas desde Azure.",
+   "atendio": "David",
+   "referencia": "PR #119",
+   "fuente": "Grupo soporte"
+  },
+  {
+   "id": 4,
+   "fecha": "2026-09-01",
+   "mes": "2026-09",
+   "solicitante": "Lau",
+   "solicitud": "Guía para que los estudiantes ingresen a las clases desde Innes",
+   "categoria": "Tutoriales",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Se grabó y envió un video tutorial el mismo día.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Lau"
+  },
+  {
+   "id": 5,
+   "fecha": "2026-09-02",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "Agregar a Cati al grupo de soporte",
+   "categoria": "Gestión / Accesos",
+   "prioridad": "Baja",
+   "estado": "Atendido",
+   "notas": "Agregada.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Grupo soporte"
+  },
+  {
+   "id": 6,
+   "fecha": "2026-09-02",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "Mover a Luis Francisco Gómez Motta del 2A al 3A de IA",
+   "categoria": "Matrículas / Traslados",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Trasladado por consola al Bootcamp 3A-IA.",
+   "atendio": "Oscar",
+   "referencia": "",
+   "fuente": "Grupo soporte"
+  },
+  {
+   "id": 7,
+   "fecha": "2026-09-03",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "¿Los estudiantes pueden descargar la presentación de la clase?",
+   "categoria": "Consultas de uso",
+   "prioridad": "Baja",
+   "estado": "Atendido",
+   "notas": "Respondido: las presentaciones se ven en la plataforma; no se habilita descarga.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Grupo soporte"
+  },
+  {
+   "id": 8,
+   "fecha": "2026-09-04",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "Reemplazar el contenido del M1 por el nuevo (archivo de contenidos)",
+   "categoria": "Contenidos",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Contenidos actualizados en la plataforma.",
+   "atendio": "Oscar",
+   "referencia": "",
+   "fuente": "Grupo soporte"
+  },
+  {
+   "id": 9,
+   "fecha": "2026-09-04",
+   "mes": "2026-09",
+   "solicitante": "Cati",
+   "solicitud": "Compartir el archivo de planeación semanal",
+   "categoria": "Gestión / Accesos",
+   "prioridad": "Baja",
+   "estado": "Atendido",
+   "notas": "Archivo compartido.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Cati"
+  },
+  {
+   "id": 10,
+   "fecha": "2026-09-07",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "Links de los resultados de las encuestas",
+   "categoria": "Encuestas",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Compartidos los dos tableros de Notion con las respuestas.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Laura Duque"
+  },
+  {
+   "id": 11,
+   "fecha": "2026-09-07",
+   "mes": "2026-09",
+   "solicitante": "Emely",
+   "solicitud": "Remitente de los correos de bienvenida y registro",
+   "categoria": "Correos",
+   "prioridad": "Baja",
+   "estado": "Atendido",
+   "notas": "Informado el remitente (no-reply de mg.lacocreadora.com).",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Grupo soporte"
+  },
+  {
+   "id": 12,
+   "fecha": "2026-09-07",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "El entregable 2 está mal: es el mismo entregable 1",
+   "categoria": "Entregables",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Se cambió por el entregable correcto del archivo de contenidos.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Grupo soporte"
+  },
+  {
+   "id": 13,
+   "fecha": "2026-09-07",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "Murales de clase del bootcamp 2A-IA (módulo 2) son los mismos del 1",
+   "categoria": "Murales",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Reunión de revisión y corrección de las URL de los murales de clase del 2A-IA.",
+   "atendio": "David y Oscar",
+   "referencia": "",
+   "fuente": "Grupo soporte"
+  },
+  {
+   "id": 14,
+   "fecha": "2026-09-07",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "Que en las encuestas aparezca el bootcamp del estudiante",
+   "categoria": "Encuestas",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Las respuestas que llegan a Notion identifican la cohorte exacta del bootcamp.",
+   "atendio": "David",
+   "referencia": "PR #134",
+   "fuente": "Grupo soporte"
+  },
+  {
+   "id": 15,
+   "fecha": "2026-09-07",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "Bootcamp 3: no se ven los 37 campos del entregable de clase",
+   "categoria": "Reportes / Exportaciones",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Ajustada la exportación; se agregó la columna solicitada.",
+   "atendio": "Oscar",
+   "referencia": "PR #128",
+   "fuente": "Grupo soporte"
+  },
+  {
+   "id": 16,
+   "fecha": "2026-09-07",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "Crear los bootcamps con los correos premium (prioridad Liderazgo e I+D)",
+   "categoria": "Creación de bootcamps",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Bootcamps creados con profesor asignado; luego se cargaron contenidos.",
+   "atendio": "Oscar",
+   "referencia": "",
+   "fuente": "Grupo soporte"
+  },
+  {
+   "id": 17,
+   "fecha": "2026-09-08",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "Perfil profesor: no se puede descargar el perfil individual (PDF)",
+   "categoria": "Diagnóstico / Reportes PDF",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Nuevo endpoint para que el profesor descargue el PDF del diagnóstico individual de cada estudiante.",
+   "atendio": "David",
+   "referencia": "PR #256 · #122",
+   "fuente": "Grupo soporte"
+  },
+  {
+   "id": 18,
+   "fecha": "2026-09-08",
+   "mes": "2026-09",
+   "solicitante": "Lau",
+   "solicitud": "Una persona no avanza de la primera pregunta del diagnóstico",
+   "categoria": "Diagnóstico",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Se explicó la regla de repartir 100 puntos entre 20 preguntas y se envió correo explicativo; el bloqueo en celular se corrigió después (PR #143).",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Grupo soporte / Chat Lau"
+  },
+  {
+   "id": 19,
+   "fecha": "2026-09-08",
+   "mes": "2026-09",
+   "solicitante": "David (soporte)",
+   "solicitud": "Numeración de clases y clics sobre el branding de Google en las presentaciones",
+   "categoria": "Plataforma / Mejoras",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Numeración continua de clases entre módulos y bloqueo de clics en el overlay de Google Slides.",
+   "atendio": "David",
+   "referencia": "PR #120 · #121",
+   "fuente": "GitHub"
+  },
+  {
+   "id": 20,
+   "fecha": "2026-09-09",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "¿Cuándo abre el 4A-IA?",
+   "categoria": "Creación de bootcamps",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Bootcamp 4A-IA creado ese día.",
+   "atendio": "David y Oscar",
+   "referencia": "",
+   "fuente": "Grupo soporte"
+  },
+  {
+   "id": 21,
+   "fecha": "2026-09-09",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "Grabación de la clase del 1A-IA no está disponible",
+   "categoria": "Grabaciones",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Grabaciones subidas; se advirtió que una grabación de Google salió de 7 h / 15 GB.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Grupo soporte"
+  },
+  {
+   "id": 22,
+   "fecha": "2026-09-10",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "Descargar en Excel las notas de todos los estudiantes (soporte de prefactura)",
+   "categoria": "Entregables / Calificaciones",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Botón de exportación masiva de calificaciones en la tabla de entregas.",
+   "atendio": "David",
+   "referencia": "PR #123",
+   "fuente": "Grupo soporte / Chat Laura Duque"
+  },
+  {
+   "id": 23,
+   "fecha": "2026-09-10",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "Crear las clases en Alinna (Liderazgo) y habilitar el perfil del profesor",
+   "categoria": "Configuración de clases",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Clases creadas y perfil de Alinna corregido (error en el correo).",
+   "atendio": "David y Oscar",
+   "referencia": "",
+   "fuente": "Grupo soporte"
+  },
+  {
+   "id": 24,
+   "fecha": "2026-09-10",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "Cargar contenidos de Liderazgo para iniciar mentorías",
+   "categoria": "Contenidos",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Contenidos, presentaciones y entregable cargados.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Grupo soporte"
+  },
+  {
+   "id": 25,
+   "fecha": "2026-09-11",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "Liderazgo: nombres de clases, nombre del entregable y nuevo mural para clases 4-6",
+   "categoria": "Contenidos / Murales",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Nombres y entregable ajustados según el archivo; mural de clases 4-6 actualizado.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Laura Duque"
+  },
+  {
+   "id": 26,
+   "fecha": "2026-09-11",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "Murales de clase de I+D (clases 1-3 y 4-6), urgente",
+   "categoria": "Murales",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Murales de clase de I+D cargados ese día.",
+   "atendio": "David y Oscar",
+   "referencia": "",
+   "fuente": "Chat Laura Duque"
+  },
+  {
+   "id": 27,
+   "fecha": "2026-09-11",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "4A-IA: murales de las clases 4-6 iguales a los de 1-3",
+   "categoria": "Murales",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Murales corregidos.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Laura Duque"
+  },
+  {
+   "id": 28,
+   "fecha": "2026-09-11",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "I+D 2 semanas: la última semana es lunes, martes y miércoles",
+   "categoria": "Configuración de clases",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Fechas de clases ajustadas.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Grupo soporte"
+  },
+  {
+   "id": 29,
+   "fecha": "2026-09-14",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "Error al ver el diagnóstico de equipo desde el perfil del explorador",
+   "categoria": "Diagnóstico",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Corregido y verificado con el explorador de prueba.",
+   "atendio": "Oscar",
+   "referencia": "",
+   "fuente": "Grupo soporte"
+  },
+  {
+   "id": 30,
+   "fecha": "2026-09-14",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "4A-IA: murales del módulo 2 iguales",
+   "categoria": "Murales",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Murales del M2 ajustados.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Laura Duque"
+  },
+  {
+   "id": 31,
+   "fecha": "2026-09-14",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "Las citaciones de Calendar llegan sin título",
+   "categoria": "Calendar / Meet",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Títulos agregados a las citaciones.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Laura Duque / Chat Cati"
+  },
+  {
+   "id": 32,
+   "fecha": "2026-09-14",
+   "mes": "2026-09",
+   "solicitante": "Cati",
+   "solicitud": "Un estudiante no sabe dónde ver los entregables",
+   "categoria": "Consultas de uso",
+   "prioridad": "Baja",
+   "estado": "Atendido",
+   "notas": "Ruta: Aprende → bootcamp → Comenzar → última clase.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Cati"
+  },
+  {
+   "id": 33,
+   "fecha": "2026-09-14",
+   "mes": "2026-09",
+   "solicitante": "Cati",
+   "solicitud": "Estudiante del grupo 3 de IA no ve las presentaciones",
+   "categoria": "Contenidos / Presentaciones",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Verificado desde varios perfiles: era caché del navegador; se envió tutorial y usuario demo.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Grupo soporte / Chat Cati"
+  },
+  {
+   "id": 34,
+   "fecha": "2026-09-15",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "Un estudiante reprobó el entregable, lo rehízo y no se puede calificar de nuevo",
+   "categoria": "Entregables / Calificaciones",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Se permite volver a calificar; luego se simplificó a un solo botón \"Calificar\" siempre editable.",
+   "atendio": "David",
+   "referencia": "PR #129 · #131",
+   "fuente": "Grupo soporte"
+  },
+  {
+   "id": 35,
+   "fecha": "2026-09-15",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "Crear el Boot 5 IA en Ninna (bloqueo de Calendar)",
+   "categoria": "Creación de bootcamps",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Bootcamp 5A-IA creado en Ninna.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Grupo soporte"
+  },
+  {
+   "id": 36,
+   "fecha": "2026-09-15",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "Un profesor ve murales del bootcamp anterior (caché)",
+   "categoria": "Plataforma / Caché",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Se envió guía/audio para limpiar caché y se ajustó el comportamiento al desplegar.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Laura Duque"
+  },
+  {
+   "id": 37,
+   "fecha": "2026-09-15",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "Video tutorial en versión profesional",
+   "categoria": "Tutoriales",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Video entregado el 16/09.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Laura Duque"
+  },
+  {
+   "id": 38,
+   "fecha": "2026-09-15",
+   "mes": "2026-09",
+   "solicitante": "Cati",
+   "solicitud": "Restablecer la contraseña de Jeimi Zapata (Liderazgo 1)",
+   "categoria": "Accesos / Contraseñas",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Contraseña por defecto asignada y acceso verificado.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Cati"
+  },
+  {
+   "id": 39,
+   "fecha": "2026-09-15",
+   "mes": "2026-09",
+   "solicitante": "Cati",
+   "solicitud": "Carlos Rojas quedó en IA y debía estar en Liderazgo 1E",
+   "categoria": "Matrículas / Traslados",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Trasladado del 4A-IA a Liderazgo 1E; mientras tanto se le dio el link de la clase.",
+   "atendio": "Oscar",
+   "referencia": "",
+   "fuente": "Chat Cati / Chat Oscar"
+  },
+  {
+   "id": 40,
+   "fecha": "2026-09-16",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "Estudiantes con murales de clase distintos (reporte de Tefo)",
+   "categoria": "Murales",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Revisión de URLs de murales por bootcamp en Drive (IA 1-4, Liderazgo, I+D) y corrección.",
+   "atendio": "David y Oscar",
+   "referencia": "",
+   "fuente": "Grupo soporte"
+  },
+  {
+   "id": 41,
+   "fecha": "2026-09-16",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "Crear el Boot 5 de IA",
+   "categoria": "Creación de bootcamps",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Creado.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Laura Duque"
+  },
+  {
+   "id": 42,
+   "fecha": "2026-09-16",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "Horario de clase 6-7 p. m. debía ser 6-8 p. m.",
+   "categoria": "Configuración / Fechas",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Revisado y corregido.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Laura Duque"
+  },
+  {
+   "id": 43,
+   "fecha": "2026-09-16",
+   "mes": "2026-09",
+   "solicitante": "Cati",
+   "solicitud": "Cambiar el correo registrado de una estudiante",
+   "categoria": "Datos de usuario",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Correo corregido.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Cati"
+  },
+  {
+   "id": 44,
+   "fecha": "2026-09-16",
+   "mes": "2026-09",
+   "solicitante": "Cati",
+   "solicitud": "Archivo de asistencia de Meet (correo Alinna) sale con error",
+   "categoria": "Asistencias",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Se compartió la hoja de asistencia.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Cati"
+  },
+  {
+   "id": 45,
+   "fecha": "2026-09-17",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "Una mentora no ve la calificación (Marco Paz, Liderazgo)",
+   "categoria": "Entregables / Calificaciones",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "La vista del estudiante se refresca tras calificar y muestra el estado real.",
+   "atendio": "David",
+   "referencia": "PR #132",
+   "fuente": "Grupo soporte"
+  },
+  {
+   "id": 46,
+   "fecha": "2026-09-17",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "Ajustes al video de diagnóstico de equipo",
+   "categoria": "Tutoriales",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Video ajustado (intro de ingreso y descarga de resultados) y comprimido el 18/09.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Laura Duque"
+  },
+  {
+   "id": 47,
+   "fecha": "2026-09-17",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "Subir la presentación de I+D del día",
+   "categoria": "Contenidos / Presentaciones",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Presentación actualizada.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Laura Duque"
+  },
+  {
+   "id": 48,
+   "fecha": "2026-09-18",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "Murales M2 del 4A-IA aparecen llenos",
+   "categoria": "Murales",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Revisados los murales (vacíos) y corregidos.",
+   "atendio": "Oscar",
+   "referencia": "",
+   "fuente": "Grupo soporte"
+  },
+  {
+   "id": 49,
+   "fecha": "2026-09-18",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "El entregable del 5A-IA era el de I+D",
+   "categoria": "Entregables",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Entregables del 5A-IA actualizados.",
+   "atendio": "Oscar",
+   "referencia": "",
+   "fuente": "Grupo soporte"
+  },
+  {
+   "id": 50,
+   "fecha": "2026-09-18",
+   "mes": "2026-09",
+   "solicitante": "Cati",
+   "solicitud": "Fecha de inicio errónea para estudiantes del IA 4",
+   "categoria": "Configuración / Fechas",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Fecha corregida; indicado refrescar u otro navegador.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Cati"
+  },
+  {
+   "id": 51,
+   "fecha": "2026-09-18",
+   "mes": "2026-09",
+   "solicitante": "Cati",
+   "solicitud": "Video tutorial del diagnóstico de equipo (Liderazgo)",
+   "categoria": "Tutoriales",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Video entregado.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Cati"
+  },
+  {
+   "id": 52,
+   "fecha": "2026-09-21",
+   "mes": "2026-09",
+   "solicitante": "Cati",
+   "solicitud": "Marta Chacón (I+D) envió el entregable en blanco",
+   "categoria": "Entregables",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Se explicó \"Ver entrega\" para modificar el mural; luego se agregó el botón \"Modificar entrega\".",
+   "atendio": "David",
+   "referencia": "PR #139",
+   "fuente": "Chat Cati"
+  },
+  {
+   "id": 53,
+   "fecha": "2026-09-21",
+   "mes": "2026-09",
+   "solicitante": "Cati",
+   "solicitud": "Estudiante de Liderazgo no ve Estructura para invitar colaboradores",
+   "categoria": "Invitaciones / Roles",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Estaba activa en dos bootcamps; se desactivó la membresía de IA y se corrigió el error.",
+   "atendio": "David y Oscar",
+   "referencia": "PR #262 · #133",
+   "fuente": "Chat Cati / Chat Oscar"
+  },
+  {
+   "id": 54,
+   "fecha": "2026-09-22",
+   "mes": "2026-09",
+   "solicitante": "Lau",
+   "solicitud": "Mostrar el género del estudiante (sale en femenino)",
+   "categoria": "Plataforma / Mejoras",
+   "prioridad": "Baja",
+   "estado": "No aplica (explicado)",
+   "notas": "Por política de la empresa la plataforma se maneja en femenino (\"Cocreadora\"); se explicó al estudiante.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Lau"
+  },
+  {
+   "id": 55,
+   "fecha": "2026-09-22",
+   "mes": "2026-09",
+   "solicitante": "Cati",
+   "solicitud": "Grabaciones de las clases 5 y 6 del IA 3 no se ven",
+   "categoria": "Grabaciones",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Revisadas y corregidas.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Cati"
+  },
+  {
+   "id": 56,
+   "fecha": "2026-09-22",
+   "mes": "2026-09",
+   "solicitante": "Cati",
+   "solicitud": "Archivo de asistencia de Meet del IA 4 (correo Onna)",
+   "categoria": "Asistencias",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Enviado.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Cati"
+  },
+  {
+   "id": 57,
+   "fecha": "2026-09-22",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "Murales M2 del bootcamp 3 para que el profesor los vea con anticipación",
+   "categoria": "Murales",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Cargados.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Laura Duque"
+  },
+  {
+   "id": 58,
+   "fecha": "2026-09-22",
+   "mes": "2026-09",
+   "solicitante": "Oscar Blum",
+   "solicitud": "Encuestas vacías y contenido de encuesta según tipo de bootcamp",
+   "categoria": "Encuestas",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Encuestas por defecto cuando attendance_data viene vacío y content_id de la encuesta obligatoria resuelto desde el backend.",
+   "atendio": "David",
+   "referencia": "PR #262 · #133",
+   "fuente": "Chat Oscar"
+  },
+  {
+   "id": 59,
+   "fecha": "2026-09-23",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "Estructura → Personas: ver plan y bootcamp, teléfono y correo, descargar Excel; teléfono obligatorio",
+   "categoria": "Estructura / Reportes",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Columna de plan (internal name), correo/teléfono bajo el nombre, exportación .xlsx con cédula y columnas de diagnóstico.",
+   "atendio": "David",
+   "referencia": "PR #266 · #137",
+   "fuente": "Chat Laura Duque"
+  },
+  {
+   "id": 60,
+   "fecha": "2026-09-23",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "Descarga del PDF individual cuando no hay diagnóstico",
+   "categoria": "Diagnóstico / Reportes PDF",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "El botón se deshabilita si el diagnóstico individual no está completo.",
+   "atendio": "David",
+   "referencia": "PR #265 · #136",
+   "fuente": "Chat Oscar"
+  },
+  {
+   "id": 61,
+   "fecha": "2026-09-23",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "Liderazgo 2E listo para matricular",
+   "categoria": "Creación de bootcamps",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Creado.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Laura Duque"
+  },
+  {
+   "id": 62,
+   "fecha": "2026-09-23",
+   "mes": "2026-09",
+   "solicitante": "Cati",
+   "solicitud": "Fechas de seguimiento del IA 3 incorrectas",
+   "categoria": "Configuración / Fechas",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Configuradas.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Cati"
+  },
+  {
+   "id": 63,
+   "fecha": "2026-09-23",
+   "mes": "2026-09",
+   "solicitante": "Cati",
+   "solicitud": "No deja invitar a Yohana García (IA 5)",
+   "categoria": "Invitaciones",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Ingresada manualmente; indicado cómo reenviar o copiar el link.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Cati"
+  },
+  {
+   "id": 64,
+   "fecha": "2026-09-23",
+   "mes": "2026-09",
+   "solicitante": "Cati",
+   "solicitud": "Mover un estudiante del IA 1 al IA 3",
+   "categoria": "Matrículas / Traslados",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Trasladado.",
+   "atendio": "Oscar",
+   "referencia": "",
+   "fuente": "Chat Cati / Chat Oscar"
+  },
+  {
+   "id": 65,
+   "fecha": "2026-09-24",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "Liderazgo 2E sin botón de mural de práctica y murales de clase repetidos",
+   "categoria": "Murales",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Asignado el mural de práctica y actualizados los murales de clase.",
+   "atendio": "David y Oscar",
+   "referencia": "",
+   "fuente": "Grupo soporte"
+  },
+  {
+   "id": 66,
+   "fecha": "2026-09-24",
+   "mes": "2026-09",
+   "solicitante": "Oscar Blum",
+   "solicitud": "Estudiante Angie Tatiana Carrera en un bootcamp equivocado",
+   "categoria": "Matrículas / Traslados",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Trasladada al 5A-IA.",
+   "atendio": "Oscar",
+   "referencia": "",
+   "fuente": "Grupo soporte"
+  },
+  {
+   "id": 67,
+   "fecha": "2026-09-24",
+   "mes": "2026-09",
+   "solicitante": "Cati",
+   "solicitud": "Mónica Rosero (Liderazgo) no puede descargar el diagnóstico de equipo",
+   "categoria": "Diagnóstico / Reportes PDF",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Se generó y envió el PDF grupal; se corrigió la descarga del PDF grupal.",
+   "atendio": "David y Oscar",
+   "referencia": "",
+   "fuente": "Chat Cati"
+  },
+  {
+   "id": 68,
+   "fecha": "2026-09-24",
+   "mes": "2026-09",
+   "solicitante": "Cati",
+   "solicitud": "Restablecer usuario de Yeni Oviedo (IA 5)",
+   "categoria": "Accesos / Contraseñas",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Resuelto en llamada.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Cati"
+  },
+  {
+   "id": 69,
+   "fecha": "2026-09-24",
+   "mes": "2026-09",
+   "solicitante": "Cati",
+   "solicitud": "¿Los estudiantes pueden descargar las presentaciones?",
+   "categoria": "Consultas de uso",
+   "prioridad": "Baja",
+   "estado": "Atendido",
+   "notas": "Respondido: no.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Cati"
+  },
+  {
+   "id": 70,
+   "fecha": "2026-09-25",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "La plataforma está caída desde la noche anterior",
+   "categoria": "Plataforma / Disponibilidad",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Se restableció el plan de la base de datos que llegó al límite; servicio arriba a las 8:57 a. m.",
+   "atendio": "Oscar",
+   "referencia": "",
+   "fuente": "Chat Laura Duque / Chat Oscar"
+  },
+  {
+   "id": 71,
+   "fecha": "2026-09-25",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "I+D: el profesor va una clase atrasada (mover la clase 6)",
+   "categoria": "Configuración de clases",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Fechas de las clases ajustadas en la plataforma.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Laura Duque"
+  },
+  {
+   "id": 72,
+   "fecha": "2026-09-25",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "Inducción semanal de la plataforma (pedido de Roberto)",
+   "categoria": "Capacitación",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Inducción preparada, realizada y grabada.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Laura Duque"
+  },
+  {
+   "id": 73,
+   "fecha": "2026-09-25",
+   "mes": "2026-09",
+   "solicitante": "Cati",
+   "solicitud": "La encuesta le aparece diligenciada a Lizeth Herrera (IA 2) sin haberla hecho",
+   "categoria": "Encuestas",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Se reinició la encuesta de la estudiante (script en consola) el 29/09.",
+   "atendio": "David y Oscar",
+   "referencia": "",
+   "fuente": "Chat Cati / Chat Oscar"
+  },
+  {
+   "id": 74,
+   "fecha": "2026-09-25",
+   "mes": "2026-09",
+   "solicitante": "Cati",
+   "solicitud": "Angela Tinjacá no aparece registrada",
+   "categoria": "Matrículas",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Verificado: estaba en 5A-IA con diagnóstico completo.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Cati"
+  },
+  {
+   "id": 75,
+   "fecha": "2026-09-28",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "Liderazgo 1: poner a todos el entregable 2 correcto antes de la mentoría",
+   "categoria": "Entregables",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Entregables actualizados por consola para todos los estudiantes.",
+   "atendio": "Oscar",
+   "referencia": "",
+   "fuente": "Chat Laura Duque / Chat Oscar"
+  },
+  {
+   "id": 76,
+   "fecha": "2026-09-28",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "Estudiante del 5A-IA con entregable de I+D",
+   "categoria": "Entregables",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Entregable de la estudiante actualizado.",
+   "atendio": "Oscar",
+   "referencia": "",
+   "fuente": "Grupo soporte"
+  },
+  {
+   "id": 77,
+   "fecha": "2026-09-28",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "Cambiar presentaciones y murales de clase de Liderazgo",
+   "categoria": "Contenidos / Murales",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Presentaciones y murales actualizados; mural M1 S1 del 2E_L cambiado.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Laura Duque"
+  },
+  {
+   "id": 78,
+   "fecha": "2026-09-28",
+   "mes": "2026-09",
+   "solicitante": "David (soporte)",
+   "solicitud": "Las fechas de clase editadas no se reflejaban en asistencias",
+   "categoria": "Asistencias / Fechas",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Al guardar una clase se propagan fecha, nombre y descripción a las asistencias.",
+   "atendio": "David",
+   "referencia": "PR #268",
+   "fuente": "GitHub"
+  },
+  {
+   "id": 79,
+   "fecha": "2026-09-29",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "Configurar los bootcamps con los correos nuevos (Ronnie IA, Annet I+D)",
+   "categoria": "Creación de bootcamps",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Creados y configurados.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Laura Duque"
+  },
+  {
+   "id": 80,
+   "fecha": "2026-09-29",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "Perfil líder (2E_L): no deja invitar exploradores",
+   "categoria": "Invitaciones / Roles",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Corregido el perfil de líder del nuevo bootcamp; verificado con el usuario demo.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Grupo soporte / Chat Laura Duque"
+  },
+  {
+   "id": 81,
+   "fecha": "2026-09-29",
+   "mes": "2026-09",
+   "solicitante": "Cati",
+   "solicitud": "Verificar matrícula de carolina.95144 en Liderazgo 2",
+   "categoria": "Matrículas",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Registrada en Liderazgo 2 con diagnóstico completo.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Cati"
+  },
+  {
+   "id": 82,
+   "fecha": "2026-09-29",
+   "mes": "2026-09",
+   "solicitante": "Oscar Blum",
+   "solicitud": "Registrar dos profesores nuevos en Innes",
+   "categoria": "Gestión / Accesos",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Registrados y cambiados a rol profesor desde el admin.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Oscar"
+  },
+  {
+   "id": 83,
+   "fecha": "2026-09-30",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "Las fechas de las asistencias no coinciden con las de las clases (I+D, IA 4, Liderazgo 1)",
+   "categoria": "Asistencias / Fechas",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Asistencias del profesor muestran la fecha y nombre vigentes de cada clase y se recargan al entrar.",
+   "atendio": "David",
+   "referencia": "PR #270 · #142",
+   "fuente": "Grupo soporte / Chat Laura Duque"
+  },
+  {
+   "id": 84,
+   "fecha": "2026-09-30",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "Confirmar que el bootcamp del 29/09 es el 2B-I+D",
+   "categoria": "Configuración",
+   "prioridad": "Baja",
+   "estado": "Atendido",
+   "notas": "Confirmado y renombrado con su nombre interno.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Grupo soporte"
+  },
+  {
+   "id": 85,
+   "fecha": "2026-09-30",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "Videos de la plataforma para Roberto y video de Meet para profesores",
+   "categoria": "Tutoriales",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Carpeta de Drive con todos los tutoriales compartida; video de Meet elaborado.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Laura Duque"
+  },
+  {
+   "id": 86,
+   "fecha": "2026-09-30",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "Inducción de la plataforma al equipo de Mujeres",
+   "categoria": "Capacitación",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Inducción realizada y grabación enviada.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Laura Duque"
+  },
+  {
+   "id": 87,
+   "fecha": "2026-09-30",
+   "mes": "2026-09",
+   "solicitante": "Laura Duque",
+   "solicitud": "Citación de I+D sin link de acceso",
+   "categoria": "Calendar / Meet",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Nueva clase y link configurados y actualizados en la plataforma.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Laura Duque"
+  },
+  {
+   "id": 88,
+   "fecha": "2026-10-01",
+   "mes": "2026-10",
+   "solicitante": "Laura Duque",
+   "solicitud": "Mural de práctica nuevo, ajustes I+D semana 1 y M1 de Mujeres",
+   "categoria": "Contenidos / Murales",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Cargados antes del lunes.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Laura Duque"
+  },
+  {
+   "id": 89,
+   "fecha": "2026-10-01",
+   "mes": "2026-10",
+   "solicitante": "Laura Duque",
+   "solicitud": "El correo de bienvenida de Mujeres no lleva PDF/video",
+   "categoria": "Correos",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Se agregaron el PDF y el video faltantes de Liderazgo y Mujeres en el correo de bienvenida.",
+   "atendio": "David",
+   "referencia": "PR #271 · LCO-282",
+   "fuente": "Chat Laura Duque"
+  },
+  {
+   "id": 90,
+   "fecha": "2026-10-02",
+   "mes": "2026-10",
+   "solicitante": "Lau",
+   "solicitud": "Error en el registro desde el link de invitación",
+   "categoria": "Registro / Invitaciones",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Revisado: el usuario quedó registrado en el Bootcamp 7A-IA y pudo ingresar.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Lau"
+  },
+  {
+   "id": 91,
+   "fecha": "2026-10-02",
+   "mes": "2026-10",
+   "solicitante": "Cati",
+   "solicitud": "Asistencias del IA (30/09 y 01/10)",
+   "categoria": "Asistencias",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Enviadas.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Cati"
+  },
+  {
+   "id": 92,
+   "fecha": "2026-10-02",
+   "mes": "2026-10",
+   "solicitante": "Cati",
+   "solicitud": "El diagnóstico desde el celular no contabiliza los puntos",
+   "categoria": "Diagnóstico",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Corregido: la app se declara en español y no se traduce (el traductor congelaba el diagnóstico) y la vista móvil se ajustó.",
+   "atendio": "David",
+   "referencia": "PR #143 · LCO-285",
+   "fuente": "Chat Cati"
+  },
+  {
+   "id": 93,
+   "fecha": "2026-10-02",
+   "mes": "2026-10",
+   "solicitante": "Cati",
+   "solicitud": "Grabaciones de las primeras semanas del IA 5 no disponibles",
+   "categoria": "Grabaciones",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Verificadas disponibles.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Cati"
+  },
+  {
+   "id": 94,
+   "fecha": "2026-10-05",
+   "mes": "2026-10",
+   "solicitante": "Laura Duque",
+   "solicitud": "Mujeres sin botón de práctica y con entregable de Liderazgo",
+   "categoria": "Murales / Entregables",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Agregado el mural de práctica y corregida la configuración del entregable.",
+   "atendio": "David y Oscar",
+   "referencia": "",
+   "fuente": "Grupo soporte"
+  },
+  {
+   "id": 95,
+   "fecha": "2026-10-05",
+   "mes": "2026-10",
+   "solicitante": "Laura Duque",
+   "solicitud": "7A y 2B-I+D con mural de práctica incorrecto",
+   "categoria": "Murales",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Cambiado al mural de la plantilla correcta.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Laura Duque"
+  },
+  {
+   "id": 96,
+   "fecha": "2026-10-05",
+   "mes": "2026-10",
+   "solicitante": "Cati",
+   "solicitud": "No deja matricular a dos estudiantes",
+   "categoria": "Invitaciones / Registro",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Ya estaban registrados; se asignó contraseña por defecto para que ingresaran.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Cati"
+  },
+  {
+   "id": 97,
+   "fecha": "2026-10-05",
+   "mes": "2026-10",
+   "solicitante": "Cati",
+   "solicitud": "El texto de Ayuda dice que todos los diagnósticos son obligatorios",
+   "categoria": "Contenido de ayuda",
+   "prioridad": "Baja",
+   "estado": "Atendido",
+   "notas": "Texto corregido en Ayuda → Primeros pasos.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Cati"
+  },
+  {
+   "id": 98,
+   "fecha": "2026-10-05",
+   "mes": "2026-10",
+   "solicitante": "Cati",
+   "solicitud": "Angélica Hernández quedó registrada con los datos de otra persona",
+   "categoria": "Datos de usuario",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Nueva función para editar nombre, cédula y teléfono desde el admin; datos corregidos.",
+   "atendio": "David",
+   "referencia": "PR #274 · #146 · LCO-287",
+   "fuente": "Chat Cati"
+  },
+  {
+   "id": 99,
+   "fecha": "2026-10-06",
+   "mes": "2026-10",
+   "solicitante": "Laura Duque",
+   "solicitud": "Mujeres 1D_M: mover las sesiones de la última semana (lun-mar-mié)",
+   "categoria": "Configuración de clases",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Configuración masiva de fechas y URL de reunión desde el admin.",
+   "atendio": "David",
+   "referencia": "PR #144 · LCO-286",
+   "fuente": "Grupo soporte"
+  },
+  {
+   "id": 100,
+   "fecha": "2026-10-06",
+   "mes": "2026-10",
+   "solicitante": "Laura Duque",
+   "solicitud": "Liderazgo 2E todavía sin entregable 2",
+   "categoria": "Entregables",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Entregable agregado.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Grupo soporte"
+  },
+  {
+   "id": 101,
+   "fecha": "2026-10-06",
+   "mes": "2026-10",
+   "solicitante": "Laura Duque",
+   "solicitud": "Descarga masiva de murales para la prefactura",
+   "categoria": "Entregables / Exportaciones",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Se explicó el botón del admin que descarga todos los murales en PDF.",
+   "atendio": "Oscar",
+   "referencia": "",
+   "fuente": "Grupo soporte"
+  },
+  {
+   "id": 102,
+   "fecha": "2026-10-06",
+   "mes": "2026-10",
+   "solicitante": "David (soporte)",
+   "solicitud": "Asistencias del profesor daba error en bootcamps sin estudiantes",
+   "categoria": "Asistencias",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Sin estudiantes se muestra \"No hay estudiantes registrados\" en vez de error.",
+   "atendio": "David",
+   "referencia": "PR #272 · LCO-283",
+   "fuente": "GitHub"
+  },
+  {
+   "id": 103,
+   "fecha": "2026-10-07",
+   "mes": "2026-10",
+   "solicitante": "Lau",
+   "solicitud": "La clase 1 de Mujeres no quedó grabada",
+   "categoria": "Grabaciones",
+   "prioridad": "Alta",
+   "estado": "No se pudo (explicado)",
+   "notas": "La profesora entró y salió de la llamada y no quedó registro. Se acordó inducción de Meet y agregar colaboradores para que no se repita.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Lau / Chat Laura Duque"
+  },
+  {
+   "id": 104,
+   "fecha": "2026-10-07",
+   "mes": "2026-10",
+   "solicitante": "Lau",
+   "solicitud": "Revisar la clase del día para asegurar la grabación",
+   "categoria": "Grabaciones",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Reunión de verificación previa; grabaciones en orden el 08/10.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Lau"
+  },
+  {
+   "id": 105,
+   "fecha": "2026-10-07",
+   "mes": "2026-10",
+   "solicitante": "Cati",
+   "solicitud": "Claudia Sánchez no puede enviar el diagnóstico desde el celular",
+   "categoria": "Diagnóstico",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Corregido con el ajuste móvil (PR #143) y acceso verificado.",
+   "atendio": "David",
+   "referencia": "PR #143",
+   "fuente": "Chat Cati"
+  },
+  {
+   "id": 106,
+   "fecha": "2026-10-07",
+   "mes": "2026-10",
+   "solicitante": "Cati",
+   "solicitud": "Grabación y asistencia de una clase no grabada",
+   "categoria": "Grabaciones",
+   "prioridad": "Media",
+   "estado": "No se pudo (explicado)",
+   "notas": "La profesora no grabó la sesión: no hay grabación ni asistencia para esa clase.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Cati"
+  },
+  {
+   "id": 107,
+   "fecha": "2026-10-07",
+   "mes": "2026-10",
+   "solicitante": "Laura Duque",
+   "solicitud": "Problema reportado por la profesora de I+D 2",
+   "categoria": "Grabaciones / Accesos",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Verificado el acceso a las grabaciones en Drive como estudiante.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Laura Duque"
+  },
+  {
+   "id": 108,
+   "fecha": "2026-10-07",
+   "mes": "2026-10",
+   "solicitante": "Oscar Blum",
+   "solicitud": "Botón \"Ir a la clase\" se desactivaba apenas empezaba la clase",
+   "categoria": "Clases / Home estudiante",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "El botón se habilita 20 min antes y durante las 3 h de clase.",
+   "atendio": "Oscar",
+   "referencia": "PR #273 · #145 · LCO-284",
+   "fuente": "GitHub"
+  },
+  {
+   "id": 109,
+   "fecha": "2026-10-08",
+   "mes": "2026-10",
+   "solicitante": "Laura Duque",
+   "solicitud": "I+D 2 y Mujeres 1: el entregable no corresponde al curso",
+   "categoria": "Entregables",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Entregables actualizados el 08/10; I+D 2 quedó 35/35 con la plantilla correcta el 20/10.",
+   "atendio": "David y Oscar",
+   "referencia": "",
+   "fuente": "Grupo soporte / Soporte directo"
+  },
+  {
+   "id": 110,
+   "fecha": "2026-10-08",
+   "mes": "2026-10",
+   "solicitante": "Laura Duque",
+   "solicitud": "8A-IA: mural de práctica incorrecto",
+   "categoria": "Murales",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Corregido.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Laura Duque"
+  },
+  {
+   "id": 111,
+   "fecha": "2026-10-08",
+   "mes": "2026-10",
+   "solicitante": "Cati",
+   "solicitud": "Lizeth Torres (Mujeres 1) con entregable de Liderazgo",
+   "categoria": "Entregables",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Entregables de Mujeres cambiados para todo el bootcamp.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Cati"
+  },
+  {
+   "id": 112,
+   "fecha": "2026-10-08",
+   "mes": "2026-10",
+   "solicitante": "Cati",
+   "solicitud": "Helberth Tacuma: correo mal escrito (gamil)",
+   "categoria": "Datos de usuario / Accesos",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Contraseña reseteada y se re-matriculó con el correo correcto.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Cati"
+  },
+  {
+   "id": 113,
+   "fecha": "2026-10-08",
+   "mes": "2026-10",
+   "solicitante": "Cati",
+   "solicitud": "Yonatan Herreño no ve el diagnóstico de equipo",
+   "categoria": "Diagnóstico",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Explicado: el líder ve el diagnóstico de sus exploradores; se detectó que se auto-invitó; se envió el tutorial.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Cati / Soporte directo"
+  },
+  {
+   "id": 114,
+   "fecha": "2026-10-08",
+   "mes": "2026-10",
+   "solicitante": "Linda Acevedo",
+   "solicitud": "Descarga masiva de PDF de entregables del 2A-IA",
+   "categoria": "Entregables / Exportaciones",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Se envió el ZIP y se indicó el acceso desde el admin.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Linda"
+  },
+  {
+   "id": 115,
+   "fecha": "2026-10-08",
+   "mes": "2026-10",
+   "solicitante": "Laura Duque",
+   "solicitud": "Aviso al profesor al usar \"Poner contraseña por defecto\"",
+   "categoria": "Accesos / Contraseñas",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Mensaje de éxito, de \"ya tiene la contraseña por defecto\" o de error.",
+   "atendio": "David",
+   "referencia": "PR #275 · #147 · LCO-289",
+   "fuente": "Chat Laura Duque"
+  },
+  {
+   "id": 116,
+   "fecha": "2026-10-08",
+   "mes": "2026-10",
+   "solicitante": "Consulta directa",
+   "solicitud": "Buscar la cédula de Marlon Yesith Álvarez Vega",
+   "categoria": "Datos de usuario",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Base actualizada y dato encontrado (registro y diagnóstico del 08/10).",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Soporte directo"
+  },
+  {
+   "id": 117,
+   "fecha": "2026-10-09",
+   "mes": "2026-10",
+   "solicitante": "Laura Duque",
+   "solicitud": "Contenidos del M2 de Mujeres y de Liderazgo 2",
+   "categoria": "Contenidos",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Presentaciones, murales y clases cargadas.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Laura Duque"
+  },
+  {
+   "id": 118,
+   "fecha": "2026-10-09",
+   "mes": "2026-10",
+   "solicitante": "Laura Duque",
+   "solicitud": "Liderazgo 2: falta el entregable 2 (mentorías del martes)",
+   "categoria": "Entregables",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Entregable M2 de Liderazgo asignado a los 33 estudiantes del 2E (plantilla #301) por consola.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Laura Duque / Soporte directo"
+  },
+  {
+   "id": 119,
+   "fecha": "2026-10-09",
+   "mes": "2026-10",
+   "solicitante": "Laura Duque",
+   "solicitud": "Mujeres M2: entregable incorrecto y sin nombre",
+   "categoria": "Entregables",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Entregable M2 de Mujeres (plantilla 1854b5f6) asignado a los bootcamps 300 (43) y 304 (22) por consola.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Laura Duque / Soporte directo"
+  },
+  {
+   "id": 120,
+   "fecha": "2026-10-09",
+   "mes": "2026-10",
+   "solicitante": "Laura Duque",
+   "solicitud": "Exploradores de prueba con diagnóstico para la demostración de Mujeres 2",
+   "categoria": "Datos de prueba",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "3 exploradores con diagnóstico en el grupo FALABELA e instrucciones para descargar el PDF.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Laura Duque"
+  },
+  {
+   "id": 121,
+   "fecha": "2026-10-09",
+   "mes": "2026-10",
+   "solicitante": "Laura Duque",
+   "solicitud": "¿Cómo se generan insignias?",
+   "categoria": "Insignias",
+   "prioridad": "Baja",
+   "estado": "Atendido",
+   "notas": "Explicado el proceso de generación.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Laura Duque"
+  },
+  {
+   "id": 122,
+   "fecha": "2026-10-09",
+   "mes": "2026-10",
+   "solicitante": "Lau",
+   "solicitud": "Estudiante no puede ingresar; el correo quedó mal escrito",
+   "categoria": "Datos de usuario / Accesos",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Re-registro con el correo correcto y desactivación del erróneo.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Lau"
+  },
+  {
+   "id": 123,
+   "fecha": "2026-10-09",
+   "mes": "2026-10",
+   "solicitante": "Linda Acevedo",
+   "solicitud": "Fijar la fila de clases y fechas en Asistencias",
+   "categoria": "Asistencias",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Encabezado fijo con clases y fechas al bajar por la lista.",
+   "atendio": "David",
+   "referencia": "PR #149 · LCO-288",
+   "fuente": "Chat Linda"
+  },
+  {
+   "id": 124,
+   "fecha": "2026-10-09",
+   "mes": "2026-10",
+   "solicitante": "Cati",
+   "solicitud": "Jhonatan Avendaño tiene un problema con su entregable",
+   "categoria": "Entregables",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Revisado: sin problema propio (entregable 1 calificado, 2 pendiente); se indicó encuesta y re-login.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Cati / Soporte directo"
+  },
+  {
+   "id": 125,
+   "fecha": "2026-10-09",
+   "mes": "2026-10",
+   "solicitante": "Cati",
+   "solicitud": "Asistencia de Liderazgo 2 incompleta",
+   "categoria": "Asistencias",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Enviada.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Cati"
+  },
+  {
+   "id": 126,
+   "fecha": "2026-10-09",
+   "mes": "2026-10",
+   "solicitante": "Cati",
+   "solicitud": "Estudiante de Mujeres 1 no habilita el diagnóstico de equipo",
+   "categoria": "Diagnóstico",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Revisado en reunión y explicado el flujo.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Cati"
+  },
+  {
+   "id": 127,
+   "fecha": "2026-10-13",
+   "mes": "2026-10",
+   "solicitante": "Linda Acevedo",
+   "solicitud": "Descargar entregables del 3A-IA",
+   "categoria": "Entregables / Exportaciones",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "ZIP de murales enviado con indicación de orden por módulo.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Linda"
+  },
+  {
+   "id": 128,
+   "fecha": "2026-10-13",
+   "mes": "2026-10",
+   "solicitante": "Cati",
+   "solicitud": "Reiniciar la encuesta de Luisa Fernanda Ortega",
+   "categoria": "Encuestas",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Verificado con la base actualizada: no tenía encuestas hechas; no requería reinicio.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Cati / Soporte directo"
+  },
+  {
+   "id": 129,
+   "fecha": "2026-10-13",
+   "mes": "2026-10",
+   "solicitante": "Cati",
+   "solicitud": "Tutorial del envío de entregables",
+   "categoria": "Tutoriales",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Tutorial entregado.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Cati"
+  },
+  {
+   "id": 130,
+   "fecha": "2026-10-14",
+   "mes": "2026-10",
+   "solicitante": "Laura Duque",
+   "solicitud": "Exploradores de prueba para Liderazgo 3E",
+   "categoria": "Datos de prueba",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "3 exploradores con diagnóstico (equipo prueba_laura).",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Laura Duque"
+  },
+  {
+   "id": 131,
+   "fecha": "2026-10-14",
+   "mes": "2026-10",
+   "solicitante": "Laura Duque",
+   "solicitud": "Correos para los nuevos bootcamps de IA",
+   "categoria": "Creación de bootcamps",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Correos creados y bootcamps configurados.",
+   "atendio": "David y Oscar",
+   "referencia": "",
+   "fuente": "Grupo soporte / Chat Oscar"
+  },
+  {
+   "id": 132,
+   "fecha": "2026-10-14",
+   "mes": "2026-10",
+   "solicitante": "Cati",
+   "solicitud": "Matricular a Pocheat@hotmail.com en IA 8",
+   "categoria": "Matrículas",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Matriculada en el 8A-IA (Diana Téllez).",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Cati"
+  },
+  {
+   "id": 133,
+   "fecha": "2026-10-14",
+   "mes": "2026-10",
+   "solicitante": "Cati",
+   "solicitud": "Erika Martínez debería estar en Liderazgo 3",
+   "categoria": "Matrículas",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Verificado: ya estaba en Liderazgo 3E.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Cati"
+  },
+  {
+   "id": 134,
+   "fecha": "2026-10-14",
+   "mes": "2026-10",
+   "solicitante": "Cati",
+   "solicitud": "No deja matricular a Carolina Gómez (Mujeres 2)",
+   "categoria": "Matrículas",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Verificado: ya estaba matriculada en Mujeres 2.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Cati"
+  },
+  {
+   "id": 135,
+   "fecha": "2026-10-14",
+   "mes": "2026-10",
+   "solicitante": "Cati",
+   "solicitud": "La grabación de la sesión 1 del IA 8 no está cargada",
+   "categoria": "Grabaciones",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Grabaciones cargadas; indicado cerrar sesión y volver a entrar.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Cati"
+  },
+  {
+   "id": 136,
+   "fecha": "2026-10-15",
+   "mes": "2026-10",
+   "solicitante": "Laura Duque",
+   "solicitud": "9A-IA: murales 4-6 iguales a 1-3 y 10-12 iguales a 7-9",
+   "categoria": "Murales",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Murales de clase corregidos.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Laura Duque"
+  },
+  {
+   "id": 137,
+   "fecha": "2026-10-15",
+   "mes": "2026-10",
+   "solicitante": "Laura Duque",
+   "solicitud": "Mujeres: mural de clase vacío y contenidos del M2 desordenados",
+   "categoria": "Murales / Contenidos",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Murales y contenidos reorganizados.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Laura Duque"
+  },
+  {
+   "id": 138,
+   "fecha": "2026-10-15",
+   "mes": "2026-10",
+   "solicitante": "Laura Duque",
+   "solicitud": "Liderazgo 4: clases 1-2 sin mural, clase 3 con mural equivocado y M2 sin murales",
+   "categoria": "Murales",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Murales corregidos; se identificó que la plantilla de mural de clase M1 de Liderazgo falla al generarse.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Laura Duque / Soporte directo"
+  },
+  {
+   "id": 139,
+   "fecha": "2026-10-15",
+   "mes": "2026-10",
+   "solicitante": "Laura Duque",
+   "solicitud": "Profesor de Liderazgo 3: estudiantes no pueden escribir en el chat de Meet",
+   "categoria": "Calendar / Meet",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Permisos de Meet habilitados.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Laura Duque / Chat Cati"
+  },
+  {
+   "id": 140,
+   "fecha": "2026-10-15",
+   "mes": "2026-10",
+   "solicitante": "Laura Duque",
+   "solicitud": "6A-IA: pasar las últimas clases a otro correo",
+   "categoria": "Configuración de clases",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Cambio de propiedad coordinado sin cambiar el link.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Laura Duque"
+  },
+  {
+   "id": 141,
+   "fecha": "2026-10-15",
+   "mes": "2026-10",
+   "solicitante": "Cati",
+   "solicitud": "Asistencia de Liderazgo 2",
+   "categoria": "Asistencias",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Hoja de asistencia compartida.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Cati"
+  },
+  {
+   "id": 142,
+   "fecha": "2026-10-15",
+   "mes": "2026-10",
+   "solicitante": "Dirección",
+   "solicitud": "Informe de grabaciones de clase por bootcamp",
+   "categoria": "Reportes",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Dashboard publicado en GitHub Pages con reproductor y estadísticas, ZIP con links por carpetas y correo al CEO.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Soporte directo"
+  },
+  {
+   "id": 143,
+   "fecha": "2026-10-16",
+   "mes": "2026-10",
+   "solicitante": "Linda Acevedo",
+   "solicitud": "Asistencias en orden alfabético y con la cédula en la descarga",
+   "categoria": "Asistencias",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Orden A-Z, clases numeradas 1-12 y descarga en Excel con columna Cédula.",
+   "atendio": "David",
+   "referencia": "PR #278 · #150",
+   "fuente": "Chat Linda"
+  },
+  {
+   "id": 144,
+   "fecha": "2026-10-16",
+   "mes": "2026-10",
+   "solicitante": "Laura Duque",
+   "solicitud": "Fechas de asistencia que no concuerdan",
+   "categoria": "Asistencias / Fechas",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Revisado y corregido en reunión.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Laura Duque"
+  },
+  {
+   "id": 145,
+   "fecha": "2026-10-16",
+   "mes": "2026-10",
+   "solicitante": "Laura Duque",
+   "solicitud": "Entregables del 9A-IA (M1 y M2)",
+   "categoria": "Entregables",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Entregables M1 y M2 reemplazados por las plantillas nuevas a los 10 estudiantes por consola.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Oscar / Soporte directo"
+  },
+  {
+   "id": 146,
+   "fecha": "2026-10-16",
+   "mes": "2026-10",
+   "solicitante": "Laura Duque",
+   "solicitud": "Entregable 2 del 7A-IA",
+   "categoria": "Entregables",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Entregable 2 reemplazado a los 41 estudiantes, sin tocar a quien ya trabajó.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Soporte directo"
+  },
+  {
+   "id": 147,
+   "fecha": "2026-10-19",
+   "mes": "2026-10",
+   "solicitante": "Laura Duque",
+   "solicitud": "Bootcamp 10A (Komatsu): fechas, horario y citaciones",
+   "categoria": "Creación de bootcamps / Calendar",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Programa KOMATSU configurado con fechas del correo y citaciones creadas.",
+   "atendio": "David y Oscar",
+   "referencia": "",
+   "fuente": "Chat Laura Duque / Grupo soporte"
+  },
+  {
+   "id": 148,
+   "fecha": "2026-10-19",
+   "mes": "2026-10",
+   "solicitante": "Laura Duque",
+   "solicitud": "8A-IA con murales del M2 viejos e I+D desde la clase 7 con murales de IA",
+   "categoria": "Murales",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Murales cambiados.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Laura Duque"
+  },
+  {
+   "id": 149,
+   "fecha": "2026-10-19",
+   "mes": "2026-10",
+   "solicitante": "Laura Duque",
+   "solicitud": "Entregables del programa IA para nuevas matrículas y entregable 2 del 8A-IA",
+   "categoria": "Entregables",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Fichas #232 y #197 del catálogo apuntan a las plantillas nuevas; 32/32 estudiantes del 8A-IA con el entregable 2 nuevo.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Soporte directo"
+  },
+  {
+   "id": 150,
+   "fecha": "2026-10-19",
+   "mes": "2026-10",
+   "solicitante": "Laura Duque",
+   "solicitud": "Mujeres 3: el entregable 2 no es el correcto",
+   "categoria": "Entregables",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Nueva ficha #331 en el programa Mujeres y 21/21 estudiantes del 3M con el entregable correcto.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Laura Duque / Soporte directo"
+  },
+  {
+   "id": 151,
+   "fecha": "2026-10-19",
+   "mes": "2026-10",
+   "solicitante": "Emely",
+   "solicitud": "El correo de Tannia no deja crear más",
+   "categoria": "Accesos / Correos",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Revisado y resuelto con Oscar.",
+   "atendio": "David y Oscar",
+   "referencia": "",
+   "fuente": "Grupo soporte"
+  },
+  {
+   "id": 152,
+   "fecha": "2026-10-20",
+   "mes": "2026-10",
+   "solicitante": "Laura Duque",
+   "solicitud": "Reenviar invitaciones a los no registrados del 10A y remitente del correo",
+   "categoria": "Invitaciones / Correos",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Invitaciones reenviadas; prueba con correo temporal OK; se detectó el filtro del correo corporativo de Komatsu y un límite de Mailgun.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Laura Duque / Soporte directo"
+  },
+  {
+   "id": 153,
+   "fecha": "2026-10-20",
+   "mes": "2026-10",
+   "solicitante": "Laura Duque",
+   "solicitud": "Mural correcto para una clase",
+   "categoria": "Murales",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Mural actualizado.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Laura Duque"
+  },
+  {
+   "id": 154,
+   "fecha": "2026-10-20",
+   "mes": "2026-10",
+   "solicitante": "Lau",
+   "solicitud": "Mover a Jairo Barrera al IA 9",
+   "categoria": "Matrículas / Traslados",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "Movido del 2B-I+D al 9A-IA conservando su diagnóstico; entregables y correo de bienvenida generados.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Lau / Soporte directo"
+  },
+  {
+   "id": 155,
+   "fecha": "2026-10-20",
+   "mes": "2026-10",
+   "solicitante": "Cati",
+   "solicitud": "Invitaciones del equipo de Laura Patiño no llegan",
+   "categoria": "Invitaciones",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Invitaciones reenviadas a los 4 pendientes del equipo.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Cati / Soporte directo"
+  },
+  {
+   "id": 156,
+   "fecha": "2026-10-20",
+   "mes": "2026-10",
+   "solicitante": "Oscar Blum",
+   "solicitud": "Crear dos profesores nuevos en Innes",
+   "categoria": "Gestión / Accesos",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Profesores creados y bootcamps configurados.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Oscar"
+  },
+  {
+   "id": 157,
+   "fecha": "2026-10-20",
+   "mes": "2026-10",
+   "solicitante": "Laura Duque",
+   "solicitud": "Entregable 2 del I+D 2",
+   "categoria": "Entregables",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "29 estudiantes con el entregable de IA pasaron a la plantilla #299 del programa I+D (35/35).",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Soporte directo"
+  },
+  {
+   "id": 158,
+   "fecha": "2026-10-20",
+   "mes": "2026-10",
+   "solicitante": "Consulta directa",
+   "solicitud": "No se puede invitar a iveth.pedroza@global.komatsu",
+   "categoria": "Invitaciones",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Ya estaba invitada (2 envíos); se indicó revisar spam/cuarentena de Komatsu.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Soporte directo"
+  },
+  {
+   "id": 159,
+   "fecha": "2026-10-20",
+   "mes": "2026-10",
+   "solicitante": "Consulta directa",
+   "solicitud": "Jairo aparece dos veces en Estructura",
+   "categoria": "Estructura / Reportes",
+   "prioridad": "Baja",
+   "estado": "Atendido",
+   "notas": "Explicado: una cuenta con un plan inactivo (I+D) y otro activo (IA 9); no afecta insignias ni certificados.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Soporte directo"
+  },
+  {
+   "id": 160,
+   "fecha": "2026-10-20",
+   "mes": "2026-10",
+   "solicitante": "Linda Acevedo",
+   "solicitud": "Formulario de registro con nombres y apellidos obligatorios",
+   "categoria": "Registro",
+   "prioridad": "Baja",
+   "estado": "No se pudo (explicado)",
+   "notas": "Cambio de mayor alcance; quedó anotado para evaluarlo más adelante.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Linda"
+  },
+  {
+   "id": 161,
+   "fecha": "2026-10-21",
+   "mes": "2026-10",
+   "solicitante": "Consulta directa",
+   "solicitud": "Juan David Porras (Komatsu) aparece como explorador y no ve el curso",
+   "categoria": "Accesos / Roles",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "En el backend es estudiante matriculado en el 10A; el rol quedó guardado en el navegador al registrarse. Solución: cerrar sesión y volver a entrar.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Soporte directo"
+  },
+  {
+   "id": 162,
+   "fecha": "2026-10-21",
+   "mes": "2026-10",
+   "solicitante": "Cati",
+   "solicitud": "Juan Manuel Gómez Checa debe estar en Liderazgo 4 (error al aceptar invitación)",
+   "categoria": "Matrículas / Invitaciones",
+   "prioridad": "Alta",
+   "estado": "Atendido",
+   "notas": "La invitación tenía el correo con mayúscula; se corrigió y se le envió su link. Arreglo de fondo en el PR #280.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Cati / Soporte directo"
+  },
+  {
+   "id": 163,
+   "fecha": "2026-10-21",
+   "mes": "2026-10",
+   "solicitante": "Cati",
+   "solicitud": "Asistencia del IA 8",
+   "categoria": "Asistencias",
+   "prioridad": "Media",
+   "estado": "Atendido",
+   "notas": "Hoja de asistencia compartida.",
+   "atendio": "David",
+   "referencia": "",
+   "fuente": "Chat Cati"
+  }
+ ],
+ "prs": [
+  {
+   "fecha": "2026-09-03",
+   "responsable": "David",
+   "pr": "cocreapp-nextjs #119",
+   "descripcion": "PDF del diagnóstico: plantillas base desde Azure Blob Storage",
+   "jira": "LCO-113"
+  },
+  {
+   "fecha": "2026-09-08",
+   "responsable": "David",
+   "pr": "cocreapp-nextjs #120",
+   "descripcion": "Numeración continua de clases entre módulos",
+   "jira": "LCO-113"
+  },
+  {
+   "fecha": "2026-09-08",
+   "responsable": "David",
+   "pr": "cocreapp-nextjs #121",
+   "descripcion": "Bloqueo de clics en el branding de Google Slides",
+   "jira": "LCO-113"
+  },
+  {
+   "fecha": "2026-09-12",
+   "responsable": "David",
+   "pr": "cocreapp #256 · cocreapp-nextjs #122",
+   "descripcion": "Descarga del PDF individual desde el perfil profesor",
+   "jira": "LCO-113"
+  },
+  {
+   "fecha": "2026-09-12",
+   "responsable": "David",
+   "pr": "cocreapp-nextjs #123",
+   "descripcion": "Exportación masiva de calificaciones",
+   "jira": "LCO-113"
+  },
+  {
+   "fecha": "2026-09-14",
+   "responsable": "Oscar",
+   "pr": "cocreapp #257 · cocreapp-nextjs #125",
+   "descripcion": "Corrección del detalle de estudiante",
+   "jira": "LCO-113"
+  },
+  {
+   "fecha": "2026-09-15",
+   "responsable": "David",
+   "pr": "cocreapp-nextjs #124",
+   "descripcion": "Insignias (Acreditta) en el perfil del estudiante",
+   "jira": "LCO-92"
+  },
+  {
+   "fecha": "2026-09-16",
+   "responsable": "David",
+   "pr": "cocreapp-nextjs #129",
+   "descripcion": "Volver a calificar un entregable",
+   "jira": "LCO-113"
+  },
+  {
+   "fecha": "2026-09-16",
+   "responsable": "Oscar",
+   "pr": "cocreapp #258 · cocreapp-nextjs #128",
+   "descripcion": "Aprovisionamiento de bootcamp y exportación CSV con incidencias de mural",
+   "jira": "LCO-218"
+  },
+  {
+   "fecha": "2026-09-17",
+   "responsable": "David",
+   "pr": "cocreapp-nextjs #131",
+   "descripcion": "Recalificar con un solo botón \"Calificar\"",
+   "jira": "LCO-113"
+  },
+  {
+   "fecha": "2026-09-18",
+   "responsable": "David",
+   "pr": "cocreapp #260 · cocreapp-nextjs #132",
+   "descripcion": "Estado de calificación con refresco y \"visto\" al calificar",
+   "jira": "LCO-113"
+  },
+  {
+   "fecha": "2026-09-22",
+   "responsable": "David",
+   "pr": "cocreapp #262 · cocreapp-nextjs #133",
+   "descripcion": "Encuestas por defecto y content_id según tipo de bootcamp",
+   "jira": "LCO-113"
+  },
+  {
+   "fecha": "2026-09-22",
+   "responsable": "David",
+   "pr": "cocreapp-nextjs #134",
+   "descripcion": "Cohorte del bootcamp en las encuestas de Notion",
+   "jira": "LCO-113"
+  },
+  {
+   "fecha": "2026-09-23",
+   "responsable": "David",
+   "pr": "cocreapp #265 · cocreapp-nextjs #136",
+   "descripcion": "Sin descarga de PDF individual si no hay diagnóstico",
+   "jira": "LCO-113"
+  },
+  {
+   "fecha": "2026-09-24",
+   "responsable": "David",
+   "pr": "cocreapp #266 · cocreapp-nextjs #137",
+   "descripcion": "Estructura → Personas: plan, correo/teléfono y Excel con cédula",
+   "jira": "LCO-113"
+  },
+  {
+   "fecha": "2026-09-28",
+   "responsable": "David",
+   "pr": "cocreapp #268",
+   "descripcion": "Propagar fecha y nombre de clases a las asistencias",
+   "jira": "LCO-113"
+  },
+  {
+   "fecha": "2026-09-28",
+   "responsable": "David",
+   "pr": "cocreapp-nextjs #139",
+   "descripcion": "Botón \"Modificar entrega\" mientras espera calificación",
+   "jira": "LCO-113"
+  },
+  {
+   "fecha": "2026-10-02",
+   "responsable": "David",
+   "pr": "cocreapp #270 · cocreapp-nextjs #142",
+   "descripcion": "Asistencias del profesor con fechas vigentes",
+   "jira": "LCO-237"
+  },
+  {
+   "fecha": "2026-10-05",
+   "responsable": "David",
+   "pr": "cocreapp-nextjs #143",
+   "descripcion": "Presentación en celular y diagnóstico sin traductor",
+   "jira": "LCO-285"
+  },
+  {
+   "fecha": "2026-10-05",
+   "responsable": "Oscar",
+   "pr": "cocreapp #259 · cocreapp-nextjs #130",
+   "descripcion": "Corrección del aprovisionamiento de bootcamps y listado de ejercicios",
+   "jira": "LCO-218"
+  },
+  {
+   "fecha": "2026-10-06",
+   "responsable": "David",
+   "pr": "cocreapp-nextjs #144",
+   "descripcion": "Configuración masiva de fechas y URL de reunión",
+   "jira": "LCO-286"
+  },
+  {
+   "fecha": "2026-10-06",
+   "responsable": "David",
+   "pr": "cocreapp #271",
+   "descripcion": "PDF y video en el correo de bienvenida (Liderazgo y Mujeres)",
+   "jira": "LCO-282"
+  },
+  {
+   "fecha": "2026-10-06",
+   "responsable": "David",
+   "pr": "cocreapp #272",
+   "descripcion": "Asistencias sin error en bootcamps sin estudiantes",
+   "jira": "LCO-283"
+  },
+  {
+   "fecha": "2026-10-07",
+   "responsable": "Oscar",
+   "pr": "cocreapp #273 · cocreapp-nextjs #145",
+   "descripcion": "Botón \"Ir a la clase\" activo durante la clase",
+   "jira": "LCO-284"
+  },
+  {
+   "fecha": "2026-10-08",
+   "responsable": "David",
+   "pr": "cocreapp #274 · cocreapp-nextjs #146",
+   "descripcion": "Editar nombre, cédula y teléfono desde el admin",
+   "jira": "LCO-287"
+  },
+  {
+   "fecha": "2026-10-08",
+   "responsable": "David",
+   "pr": "cocreapp #275 · cocreapp-nextjs #147",
+   "descripcion": "Mensaje al poner la contraseña por defecto",
+   "jira": "LCO-289"
+  },
+  {
+   "fecha": "2026-10-08",
+   "responsable": "Oscar",
+   "pr": "cocreapp #276 · cocreapp-nextjs #148",
+   "descripcion": "Revisión y corrección de murales individuales desde el admin",
+   "jira": "LCO-226"
+  },
+  {
+   "fecha": "2026-10-13",
+   "responsable": "Oscar",
+   "pr": "cocreapp #277",
+   "descripcion": "Presentaciones desde el bootcamp template y asignación de murales",
+   "jira": "LCO-225"
+  },
+  {
+   "fecha": "2026-10-13",
+   "responsable": "David",
+   "pr": "cocreapp-nextjs #149",
+   "descripcion": "Encabezado fijo en Asistencias",
+   "jira": "LCO-288"
+  },
+  {
+   "fecha": "2026-10-16",
+   "responsable": "David",
+   "pr": "cocreapp #278 · cocreapp-nextjs #150",
+   "descripcion": "Asistencias A-Z, clases 1-12 y Excel con cédula",
+   "jira": "—"
+  }
+ ],
+ "corte": "2026-10-21"
+};
+const MESES = { '2026-09': 'Septiembre', '2026-10': 'Octubre' };
+const MES_C = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+const fmt = s => `${+s.slice(8, 10)} ${MES_C[+s.slice(5, 7) - 1]}`;
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const items = DATA.items;
+const count = (arr, key) => { const m = new Map(); arr.forEach(x => m.set(key(x), (m.get(key(x)) || 0) + 1)); return [...m.entries()].sort((a, b) => b[1] - a[1]); };
+
+// Resumen
+const atendidos = items.filter(x => x.estado === 'Atendido').length;
+document.getElementById('intro').textContent = `Solicitudes recibidas por soporte técnico entre el ${fmt(items[0].fecha)} y el ${fmt(DATA.corte)} de 2026, con lo que se hizo para resolver cada una y los desarrollos desplegados.`;
+document.getElementById('kpis').innerHTML = [
+  [items.length, 'solicitudes atendidas'],
+  [Math.round(atendidos / items.length * 100) + '%', 'resueltas (el resto, explicado)'],
+  [items.filter(x => x.prioridad === 'Alta').length, 'de prioridad alta'],
+  [DATA.prs.length, 'desarrollos desplegados (PRs)'],
+].map(([v, l]) => `<div class="kpi"><span class="v">${v}</span><span class="l">${l}</span></div>`).join('');
+
+function hbars(el, entries, max) {
+  const top = max || Math.max(...entries.map(e => e[1]));
+  document.getElementById(el).innerHTML = entries.map(([n, c]) =>
+    `<div class="hb"><span class="n" title="${esc(n)}">${esc(n)}</span><span class="t"><i style="width:${c / top * 100}%"></i></span><span class="c">${c}</span></div>`).join('');
+}
+hbars('byPerson', count(items, x => x.solicitante));
+hbars('byCat', count(items, x => x.categoria.split(' / ')[0]).slice(0, 10));
+
+// Semanal
+const monday = s => { const d = new Date(s + 'T12:00:00'); d.setDate(d.getDate() - ((d.getDay() + 6) % 7)); return d.toISOString().slice(0, 10); };
+const wk = new Map(); items.forEach(x => { const w = monday(x.fecha); wk.set(w, (wk.get(w) || 0) + 1); });
+const weeks = []; for (let d = new Date(monday(items[0].fecha) + 'T12:00:00'); d.toISOString().slice(0, 10) <= monday(DATA.corte); d.setDate(d.getDate() + 7)) { const k = d.toISOString().slice(0, 10); weeks.push([k, wk.get(k) || 0]); }
+const chartEl = document.getElementById('weekly'); const tip = document.createElement('div'); tip.className = 'tip'; tip.hidden = true; chartEl.appendChild(tip);
+function draw() {
+  const W = Math.max(320, chartEl.clientWidth), H = 200, pl = 30, pb = 24, pt = 10;
+  const max = Math.max(...weeks.map(w => w[1])); const top = Math.ceil(max / 10) * 10;
+  const y = v => pt + (H - pt - pb) * (1 - v / top); const slot = (W - pl) / weeks.length; const bw = Math.min(42, slot * 0.6);
+  let g = ''; for (let t = 0; t <= top; t += 10) g += `<line x1="${pl}" x2="${W}" y1="${y(t)}" y2="${y(t)}" stroke="var(--line-2)"/><text x="${pl - 6}" y="${y(t) + 4}" text-anchor="end">${t}</text>`;
+  weeks.forEach(([k, v], i) => {
+    const x = pl + slot * i + (slot - bw) / 2;
+    if (v) g += `<path d="M${x},${y(0)} V${y(v) + 4} Q${x},${y(v)} ${x + 4},${y(v)} H${x + bw - 4} Q${x + bw},${y(v)} ${x + bw},${y(v) + 4} V${y(0)} Z" fill="var(--accent)"/>`;
+    g += `<text x="${x + bw / 2}" y="${H - 6}" text-anchor="middle">${fmt(k)}</text><rect class="hit" data-i="${i}" x="${pl + slot * i}" y="${pt}" width="${slot}" height="${H - pt - pb}" fill="transparent"/>`;
+  });
+  g += `<line x1="${pl}" x2="${W}" y1="${y(0)}" y2="${y(0)}" stroke="var(--line)"/>`;
+  chartEl.querySelector('svg')?.remove();
+  chartEl.insertAdjacentHTML('afterbegin', `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Solicitudes por semana">${g}</svg>`);
+  const sc = chartEl.clientWidth / W;
+  chartEl.querySelectorAll('.hit').forEach(r => {
+    r.addEventListener('mouseenter', () => { const [k, v] = weeks[+r.dataset.i]; const e = new Date(k + 'T12:00:00'); e.setDate(e.getDate() + 6);
+      tip.innerHTML = `Semana del <b>${fmt(k)}</b> al <b>${fmt(e.toISOString().slice(0, 10))}</b>: <b>${v}</b> solicitudes`;
+      tip.style.left = Math.min(Math.max((+r.getAttribute('x') + slot / 2) * sc, 120), chartEl.clientWidth - 120) + 'px'; tip.style.top = (y(v) * sc) + 'px'; tip.hidden = false; });
+    r.addEventListener('mouseleave', () => tip.hidden = true);
+  });
+}
+draw(); let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(draw, 120); });
+
+// Lista por mes
+const months = [...new Set(items.map(x => x.mes))].sort();
+let month = months[months.length - 1], person = 'Todos', q = '';
+const mEl = document.getElementById('months');
+mEl.innerHTML = months.map(m => `<button class="tab" role="tab" data-m="${m}" aria-selected="${m === month}">${MESES[m]}<small>${items.filter(x => x.mes === m).length} solicitudes</small></button>`).join('');
+mEl.addEventListener('click', e => { const b = e.target.closest('.tab'); if (!b) return; month = b.dataset.m; mEl.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', t === b)); render(); });
+const pEl = document.getElementById('people');
+const people = ['Todos', ...count(items, x => x.solicitante).map(e => e[0])];
+pEl.innerHTML = people.map(p => `<button class="chip" data-p="${esc(p)}" aria-pressed="${p === person}">${esc(p)}</button>`).join('');
+pEl.addEventListener('click', e => { const b = e.target.closest('.chip'); if (!b) return; person = b.dataset.p; pEl.querySelectorAll('.chip').forEach(c => c.setAttribute('aria-pressed', c === b)); render(); });
+document.getElementById('q').addEventListener('input', e => { q = e.target.value.trim().toLowerCase(); render(); });
+function render() {
+  const inMonth = items.filter(x => x.mes === month);
+  const rows = inMonth.filter(x => (person === 'Todos' || x.solicitante === person) && (!q || [x.solicitud, x.notas, x.solicitante, x.categoria, x.referencia].join(' ').toLowerCase().includes(q)));
+  const ppl = count(inMonth, x => x.solicitante).slice(0, 4).map(([n, c]) => `${esc(n)} <b>${c}</b>`).join(' · ');
+  document.getElementById('monthSum').innerHTML = `<span>Total <b>${inMonth.length}</b></span><span>Alta <b>${inMonth.filter(x => x.prioridad === 'Alta').length}</b></span><span>Atendidas <b>${inMonth.filter(x => x.estado === 'Atendido').length}</b></span><span>${ppl}</span>`;
+  document.getElementById('rows').innerHTML = rows.map(x => `<tr>
+    <td class="f">${fmt(x.fecha)}</td><td class="who">${esc(x.solicitante)}</td>
+    <td class="req">${esc(x.solicitud)}<span class="cat">${esc(x.categoria)}</span></td>
+    <td><span class="pill p-${x.prioridad}">${x.prioridad}</span></td>
+    <td><span class="pill ${x.estado === 'Atendido' ? 'e-ok' : 'e-np'}">${esc(x.estado)}</span></td>
+    <td class="notes">${esc(x.notas)}${x.referencia ? `<span class="ref">${esc(x.referencia)}</span>` : ''}</td>
+    <td class="who">${esc(x.atendio)}</td></tr>`).join('') || '<tr><td colspan="7" class="empty">No hay solicitudes con ese filtro en este mes.</td></tr>';
+}
+render();
+
+// PRs
+const jira = k => k && k !== '—' ? `<a href="https://lacocreadora.atlassian.net/browse/${k}" target="_blank" rel="noopener">${k}</a>` : '—';
+const prLinks = s => s.split(' · ').map(p => { const [repo, n] = p.split(' #'); return `<a href="https://github.com/boldinn/${repo}/pull/${n}" target="_blank" rel="noopener">${esc(p)}</a>`; }).join('<br>');
+document.getElementById('prs').innerHTML = [...DATA.prs].reverse().map(p => `<tr><td class="f">${fmt(p.fecha)}</td><td class="who">${esc(p.responsable)}</td><td class="f">${prLinks(p.pr)}</td><td>${esc(p.descripcion)}</td><td class="f">${jira(p.jira)}</td></tr>`).join('');
+document.getElementById('foot').textContent = `Fuentes: chats de soporte (grupo Soporte Técnico PLATAFORMA, Laura Duque, Lau, Cati, Linda, Oscar), sesiones de soporte, GitHub y Jira. Corte: ${fmt(DATA.corte)} de 2026.`;
+</script>
+</body>
+</html>
